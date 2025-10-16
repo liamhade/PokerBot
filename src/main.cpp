@@ -75,8 +75,8 @@ Card : *char
 */
 enum class CardValue { Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace };
 enum class Suit { Clubs, Spades, Hearts, Diamonds };
-using Card = std::tuple<CardValue, Suit>; 
-using Deck = std::vector<Card>;
+using Card  = std::tuple<CardValue, Suit>; 
+using Cards = std::vector<Card>;
 
 struct DeckHandler {
 public:
@@ -100,9 +100,9 @@ public:
     }
 
 private:
-    Deck deck;
+    Cards deck;
 
-    Deck construct_deck() {
+    Cards construct_deck() {
         for (int i=0; i<13; i++) {
             CardValue c = static_cast<CardValue>(i);
             for (int j=0; j<4; j++) {
@@ -114,94 +114,27 @@ private:
     }
 };
 
-enum class KindsOfHand { 
-    High_Card, 
-    Pair,
-    Two_Pair, 
-    Three_Of_a_Kind, 
-    Straight,
-    Flush,
-    Full_House,
-    Four_Of_a_Kind,
-    Straight_Flush,
-    Royal_Flush 
-};
 
-Suit get_card_suit(Card c) { return std::get<1>(c); } 
-CardValue get_card_value(Card c) { return std::get<0>(c); } 
+/*
+Still working on:
+*/
 
-using HandRank = std::tuple<KindsOfHand, CardValue>;
-
-int num_of_value_in_hand(CardValue value, std::vector<Card> cards) {
-    int count = 0;
-    for (Card c : cards) {
-        if (get_card_value(c) == value) {
-            count++;
-        }
-    }
-    return count;
-}
-
-bool is_card_value_in_hand(std::vector<Card> cards, CardValue value) {
-    return num_of_value_in_hand(value, cards) > 0;
-}
-
-bool card_value_lt(Card c1, Card c2) {
-    return static_cast<int>(get_card_value(c1)) < static_cast<int>(get_card_value(c2));
-}
-
-bool card_values_ascend(std::vector<Card> cards) {
-    std::sort(cards.begin(), cards.end(), card_value_lt);
-    for (int i=0; i < cards.size()-1; i++) {
-        CardValue v1 = get_card_value(cards[i]);
-        CardValue v2 = get_card_value(cards[i+1]);
-        if (static_cast<int>(v1)+1 != static_cast<int>(v2)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-std::vector<std::vector<Card>> all_five_hands_from_seven(std::vector<Card> seven_card_hand) {
-    std::vector<std::vector<Card>> five_hands;
-    std::vector<int> indexes = {0,0,1,1,1,1,1};
-    do {
-        std::vector<Card> five_hand;
-        for (int i=0; i<indexes.size(); i++) {
-            if (indexes[i]) five_hand.push_back(seven_card_hand[i]);
-        } 
-        five_hands.push_back(five_hand);
-    } while (std::next_permutation(indexes.begin(), indexes.end()));
-    return five_hands;
-}
-
-bool all_cards_have_same_suit(std::vector<Card> cards) {
-    if (cards.empty() || cards.size() == 1) {
-        return true;
-    }
-    Suit s = get_card_suit(cards[0]);
-    for (int i=1; i<cards.size(); i++) {
-        if (get_card_suit(cards[i]) != s) {
-            return false;
-        }
-    }
-    return true;
-}
 
 int main() {
  
     DeckHandler deck;
     const Card c = deck.draw_card();
-
-    std::vector<Card> hand = {
-        std::make_tuple(CardValue::Queen, Suit::Clubs),
-        std::make_tuple(CardValue::Ten, Suit::Hearts),
-        std::make_tuple(CardValue::Queen, Suit::Clubs),
-        // std::make_tuple(CardValue::King, Suit::Hearts),
-        // std::make_tuple(CardValue::Two, Suit::Hearts),
-        // std::make_tuple(CardValue::Two, Suit::Clubs),
-        // std::make_tuple(CardValue::Five, Suit::Hearts)
+     
+    Cards all_cards = {
+        std::make_tuple(CardValue::Two,   Suit::Diamonds),
+        std::make_tuple(CardValue::Two ,  Suit::Clubs),
+        std::make_tuple(CardValue::Three, Suit::Diamonds),
+        std::make_tuple(CardValue::Three, Suit::Clubs),
+        std::make_tuple(CardValue::Three, Suit::Spades),
+        std::make_tuple(CardValue::Two, Suit::Hearts),
+        std::make_tuple(CardValue::Five, Suit::Hearts)
     };
-    std::cout << all_cards_have_same_suit(hand) << std::endl;
+    std::tuple<Cards, HandRank> best_hand = best_five_hand_out_of_seven(all_cards);
+    // std::cout << is_two_pair(hand) << std::endl;
     return 0;
 }
