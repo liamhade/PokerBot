@@ -4,6 +4,9 @@
 #include <tuple>
 #include <algorithm>
 #include <random>
+#include "HandEvaluator.h"
+#include "PokerDatatypes.h"
+#include "DeckHandler.h"
 
 /*
 Outline
@@ -73,68 +76,23 @@ Card : *char
         + Ace of Apaces = A
 
 */
-enum class CardValue { Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace };
-enum class Suit { Clubs, Spades, Hearts, Diamonds };
-using Card  = std::tuple<CardValue, Suit>; 
-using Cards = std::vector<Card>;
 
-struct DeckHandler {
-public:
-    DeckHandler(bool shuffle = true) {
-        construct_deck();
-        if (shuffle) {
-            shuffle_deck();
-        }
-    }
-    
-    void shuffle_deck() {    
-        std::random_device rd;
-        std::mt19937 g(rd());
-        std::shuffle(deck.begin(), deck.end(), g);
-    }
-    
-    Card draw_card() {
-        const Card card = deck.back();
-        deck.pop_back();
-        return card;
-    }
-
-private:
-    Cards deck;
-
-    Cards construct_deck() {
-        for (int i=0; i<13; i++) {
-            CardValue c = static_cast<CardValue>(i);
-            for (int j=0; j<4; j++) {
-                Suit s = static_cast<Suit>(j);
-                deck.push_back(std::make_tuple(c, s));
-            };
-        };
-        return deck;
-    }
-};
-
-
-/*
-Still working on:
-*/
 
 
 int main() {
- 
     DeckHandler deck;
     const Card c = deck.draw_card();
      
     Cards all_cards = {
         std::make_tuple(CardValue::Two,   Suit::Diamonds),
         std::make_tuple(CardValue::Two ,  Suit::Clubs),
-        std::make_tuple(CardValue::Three, Suit::Diamonds),
+        std::make_tuple(CardValue::Six, Suit::Diamonds),
         std::make_tuple(CardValue::Three, Suit::Clubs),
-        std::make_tuple(CardValue::Three, Suit::Spades),
+        std::make_tuple(CardValue::Five, Suit::Spades),
         std::make_tuple(CardValue::Two, Suit::Hearts),
         std::make_tuple(CardValue::Five, Suit::Hearts)
     };
-    std::tuple<Cards, HandRank> best_hand = best_five_hand_out_of_seven(all_cards);
+    std::tuple<Cards, HandRank> best_hand = HandEvaluator::best_five_hand_out_of_seven(all_cards);
     // std::cout << is_two_pair(hand) << std::endl;
     return 0;
 }

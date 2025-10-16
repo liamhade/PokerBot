@@ -8,7 +8,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "C:\\Users\\Liam Hade\\Desktop\\sandbox\\PokerBot\\src\\main.cpp",
+                "C:\\Users\\Liam Hade\\Desktop\\sandbox\\PokerBot\\src\\DeckHandler.cpp",
+                "C:\\Users\\Liam Hade\\Desktop\\sandbox\\PokerBot\\src\\HandEvaluator.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
