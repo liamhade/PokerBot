@@ -1,11 +1,7 @@
 #include <algorithm>
-#include "PokerDatatypes.h"
 #include "HandEvaluator.h"
 
 namespace HandEvaluator {
-	Suit get_card_suit(Card c) { return std::get<1>(c); } 
-	CardValue get_card_value(Card c) { return std::get<0>(c); } 
-
 	bool card_value_lt(Card c1, Card c2) {
 		return static_cast<int>(get_card_value(c1)) < static_cast<int>(get_card_value(c2));
 	}

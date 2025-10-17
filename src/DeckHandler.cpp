@@ -1,6 +1,6 @@
 #include <random>
 #include <algorithm>
-#include "PokerDatatypes.h"
+#include "CardHandler.h"
 #include "DeckHandler.h"
 
 DeckHandler::DeckHandler() {

@@ -2,7 +2,7 @@
 #define HAND_EVAL
 
 #include <tuple>
-#include "PokerDatatypes.h"
+#include "CardHandler.h"
 
 enum class KindsOfHand { 
     High_Card, 
@@ -19,8 +19,6 @@ enum class KindsOfHand {
 using HandRank = std::tuple<KindsOfHand, Card>;
 
 namespace HandEvaluator {
-	Suit get_card_suit(Card c);
-	CardValue get_card_value(Card c); 
 	Card get_high_card(Cards cards);
 	std::tuple<Cards, HandRank> best_five_hand_out_of_seven(Cards seven_hand);
 };

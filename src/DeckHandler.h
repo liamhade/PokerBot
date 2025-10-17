@@ -1,7 +1,7 @@
 #ifndef DECK_HANDLER
 #define DECK_HANDLER
 
-#include "PokerDatatypes.h"
+#include "CardHandler.h"
 
 struct DeckHandler {
 public:
