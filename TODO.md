@@ -1,8 +1,10 @@
-## Betting Mechanics 
+## Game Mechanics 
 
 - [x] If the minimum bet is more than the current player's total stack, then they must go all in.
 
+- [ ] Handle ties
 
+- [ ] Handle multiple games
 
 ## C++ Questions
 

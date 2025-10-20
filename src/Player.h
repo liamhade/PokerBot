@@ -19,22 +19,37 @@ using Action = std::tuple<KindsOfAction, float>;
 
 class Player {
 public:
-    Player(float starting_stack, std::string player_name, Cards random_two_cards);
+    Player(float starting_stack, std::string player_name);
 
     void show_player_info();
 
     Action get_action(std::vector<KindsOfAction> possible_actions, float current_min_bet);
-    
+
+	void set_cards(Cards cards);
+
     void remove_from_stack(float amount);
     
     void prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet);
 
+    bool has_player_folded();
+
+    void set_player_has_folded();
+
+    void add_to_amount_bet(float bet);
+
+    float get_amount_bet();
+
+    std::string get_name();
+
+    Cards get_hole_cards();
+
 private:
     std::string name;
     float stack;
+    float amount_bet = 0;
     Cards pocket;
-    bool has_folded;
-
+    bool has_folded = false;
+    
     KindsOfAction get_user_action_type(std::vector<KindsOfAction> possible_actions);
 
     bool actions_is_kind_of_bet(KindsOfAction action);

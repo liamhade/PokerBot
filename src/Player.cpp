@@ -15,10 +15,9 @@ std::string action_enum_2_string(KindsOfAction action) {
     };
 }
 
-Player::Player(float starting_stack, std::string player_name, Cards random_two_cards) {
+Player::Player(float starting_stack, std::string player_name) {
 	stack = starting_stack;
 	name = player_name;
-	pocket = random_two_cards;
 	has_folded = false;
 }
 
@@ -42,11 +41,39 @@ Action Player::get_action(std::vector<KindsOfAction> possible_actions, float cur
 	return std::make_tuple(user_action, bet_amount);
 } 
 
+void Player::set_player_has_folded() {
+	has_folded = true;
+}
+
+bool Player::has_player_folded() {
+	return has_folded;
+}
+
 void Player::remove_from_stack(float amount) {
 	if (amount > stack) {
 		std::cout << "WARNING: removing more than " << name << " has in their stack..." << std::endl;
 	}
 	stack -= amount;
+}
+
+void Player::set_cards(Cards cards) {
+	pocket = cards;
+}
+
+void Player::add_to_amount_bet(float bet) {
+	amount_bet += bet;
+}
+
+float Player::get_amount_bet() {
+	return amount_bet;
+}
+
+std::string Player::get_name() {
+	return name;
+}
+
+Cards Player::get_hole_cards() {
+	return pocket;
 }
 
 void Player::prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet) {

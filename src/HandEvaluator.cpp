@@ -1,5 +1,34 @@
 #include <algorithm>
+#include <tuple>
 #include "HandEvaluator.h"
+#include "Player.h"
+
+std::string KindsOfHand_2_string(KindsOfHand hand) {
+    switch (hand) {
+        case KindsOfHand::High_Card: 
+            return "High Card";
+        case KindsOfHand::Pair:
+            return "Pair";
+        case KindsOfHand::Two_Pair:
+            return "Two Pair";
+        case KindsOfHand::Three_Of_a_Kind: 
+            return "Three Of a Kind";
+        case KindsOfHand::Straight:
+            return "Straight";
+        case KindsOfHand::Flush:
+            return "Flush";
+        case KindsOfHand::Full_House:
+            return "Full House";
+        case KindsOfHand::Four_Of_a_Kind:
+            return "Four Of a Kind";
+        case KindsOfHand::Straight_Flush:
+            return "Straight Flush";
+        case KindsOfHand::Royal_Flush:
+            return "Royal Flush";
+        default:
+            return "None";
+    }
+}
 
 namespace HandEvaluator {
 	bool card_value_lt(Card c1, Card c2) {
@@ -244,5 +273,38 @@ namespace HandEvaluator {
 			}
 		}
 		return {best_five_hand, best_hand_rank};
+	}
+
+	std::tuple<Player, Cards, HandRank> player_with_best_hand(std::vector<Player> players, Cards community_cards) {
+		// Since we set our own constructors for the Player,
+		// we can't rely on the compiler to choose a default constructor.
+		int tuple_initialized = false;
+		Player best_player = Player(0, "none");
+		HandRank best_handrank;
+		Cards best_cards;
+
+		for (Player p : players) {
+			if (!p.has_player_folded()) {
+				Cards seven_hand = community_cards;
+				for (Card c : p.get_hole_cards()) { seven_hand.push_back(c); };
+				std::tuple<Cards, HandRank> players_handrank = best_five_hand_out_of_seven(seven_hand);
+			
+				if (!tuple_initialized) {
+					// Setting up baseline of comparison
+					best_player = p;
+					best_cards = std::get<0>(players_handrank);
+					best_handrank = std::get<1>(players_handrank);
+					tuple_initialized = true;
+				} else {
+					// Found a new best hand
+					if (handrank_lte(best_handrank, std::get<1>(players_handrank))) {
+						best_player = p;
+						best_cards = std::get<0>(players_handrank);
+						best_handrank = std::get<1>(players_handrank);
+					}
+				}
+			}
+		}
+		return std::make_tuple(best_player, best_cards, best_handrank);
 	}
 };
