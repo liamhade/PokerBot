@@ -34,7 +34,12 @@ Action Player::get_action(std::vector<KindsOfAction> possible_actions, float min
 	prompt_user_with_options(possible_actions,  min_total_bet);
 	user_action = get_user_action_type(possible_actions);            
 	if (actions_is_kind_of_bet(user_action)) {
-		bet_amount = get_user_bet_amount(min_total_bet);
+		if (user_action == KindsOfAction::CALL) {
+			bet_amount = min_total_bet - round_amount_bet;
+			std::cout << " --> Calling by betting $" << bet_amount << std::endl;
+		} else {
+			bet_amount = get_user_bet_amount(min_total_bet);
+		}
         add_to_amount_bet(bet_amount);
 		remove_from_stack(bet_amount);
 	}
