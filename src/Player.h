@@ -35,9 +35,13 @@ public:
 
     void set_player_has_folded();
 
+    void set_round_amount_bet(float amount);
+
     void add_to_amount_bet(float bet);
 
-    float get_amount_bet();
+    float get_total_amount_bet();
+
+    float get_round_amount_bet();
 
     std::string get_name();
 
@@ -46,7 +50,8 @@ public:
 private:
     std::string name;
     float stack;
-    float amount_bet = 0;
+    float total_amount_bet = 0;
+    float round_amount_bet = 0;
     Cards pocket;
     bool has_folded = false;
     
@@ -54,7 +59,7 @@ private:
 
     bool actions_is_kind_of_bet(KindsOfAction action);
 
-    void get_user_bet_amount(float* bet_amount, float current_min_bet);
+    float get_user_bet_amount(float current_min_bet);
 
     void show_possible_actions(std::vector<KindsOfAction> actions);
 };

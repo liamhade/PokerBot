@@ -19,13 +19,14 @@ public:
     
     void play() {
         deal_player_cards();
-
+        show_header("PRE-FLOP");
         betting_round();
         if (all_but_one_folded()) {
             announce_winner();
             return;
         };
         
+        show_header("FLOP");
         add_community_cards(3);
         show_community_cards();
         betting_round();
@@ -34,6 +35,7 @@ public:
             return;
         };
         
+        show_header("TURN");
         add_community_cards(1);
         show_community_cards();
         betting_round();
@@ -42,6 +44,7 @@ public:
             return;
         };
         
+        show_header("RIVER");
         add_community_cards(1);
         show_community_cards();
         betting_round();
@@ -52,12 +55,18 @@ public:
         std::cout << "Community Cards: " << get_cards_str(community_cards) << std::endl;
     }
 
+    void show_header(std::string text) {
+        std::cout << "############" << std::endl;
+        std::cout << "## " << text << std::endl;
+        std::cout << "############\n" << std::endl;
+    }
+
     void announce_winner() {
         // Winner is either because everyone folded
         if (all_but_one_folded()) {
             for (Player p : players) {
                 if (!p.has_player_folded()) {
-                    printf("%s has won the $%f pot!", p.get_name(), pot);
+                    std::cout << p.get_name() << " has won the $" << pot << "pot!"  << std::endl;
                     return;
                 }
             }
@@ -65,11 +74,10 @@ public:
         // Or the person with the best hand 
         for (Player p : players) {
             if (!p.has_player_folded()) {
-                printf("%s: %s", p.get_name(), get_cards_str(p.get_hole_cards()));
+                std::cout << p.get_name() << ": " << get_cards_str(p.get_hole_cards()) << std::endl;
             }
         }
-        printf("Community cards: %s", community_cards);
-        printf(""); 
+        std::cout << "Community cards: " << get_cards_str(community_cards) << std::endl;
         // Show the person with the best hand.
         std::tuple<Player, Cards, HandRank> player_with_best_hand = HandEvaluator::player_with_best_hand(players, community_cards);
         show_winner_details(player_with_best_hand);
@@ -80,8 +88,10 @@ public:
         Cards cards       = std::get<1>(winner_details);
         HandRank handrank = std::get<2>(winner_details);
 
-        printf("%s has won the $%f pot!", player.get_name(), pot);
-        printf("\t They had a %s with the cards: %s", KindsOfHand_2_string(std::get<0>(handrank)), get_cards_str(cards));
+        std::cout << std::endl;
+        std::cout << player.get_name() <<" has won the $" << pot << " pot!" << std::endl;
+        std::cout << " --> They had a " << KindsOfHand_2_string(std::get<0>(handrank));
+        std::cout << " with the cards: " << get_cards_str(cards) << std::endl;
     }
 
     void add_community_cards(int n) {
@@ -98,23 +108,37 @@ public:
 
     void betting_round() {
         float minimum_bet = 0.0;
+        bool all_players_have_gone = false;
         std::vector<KindsOfAction> possible_actions = { KindsOfAction::CHECK, KindsOfAction::BET, KindsOfAction::FOLD };
-
-        do {
-            for (Player p : players)  {
+        reset_player_bet_amounts_for_round();
+        while (1) {
+            for (Player& p : players)  {
+                if (all_players_have_gone) {
+                    // If every players has gone,
+                    // then the round can end on any player.
+                    if (round_is_over()) {
+                        return;
+                    }
+                }
                 if (p.has_player_folded()) {
                     continue;
                 };
-
                 Action player_action = p.get_action(possible_actions, minimum_bet);
-                handle_player_action(&p, player_action, &minimum_bet);
+                update_game_using_player_action(&p, player_action, &minimum_bet);
                 possible_actions = get_possible_actions(player_action);
             };
-        } while ((!round_is_over()));
+            all_players_have_gone = true;
+        }
     }
     
     bool round_is_over() {
         return (all_players_bet_same_amount() || all_but_one_folded());
+    }
+
+    void reset_player_bet_amounts_for_round() {
+        for (Player& p : players) {
+            p.set_round_amount_bet(0);
+        }
     }
     
     bool all_players_bet_same_amount() {
@@ -123,9 +147,9 @@ public:
             if (!p.has_player_folded()) {
                 if (bet_amount < 0) {
                     // Bet amounts can only be >= 0.
-                    bet_amount = p.get_amount_bet();
+                    bet_amount = p.get_round_amount_bet();
                 } else {
-                    if (p.get_amount_bet() != bet_amount) {
+                    if (p.get_round_amount_bet() != bet_amount) {
                         return false;
                     }
                 }
@@ -144,7 +168,7 @@ public:
         return (fold_count == players.size()-1);
     }
 
-    void handle_player_action(Player* player, Action player_action, float* minimum_bet) {
+    void update_game_using_player_action(Player* player, Action player_action, float* minimum_bet) {
         switch (std::get<0>(player_action)) {
             case KindsOfAction::CHECK:
                 return;
@@ -154,10 +178,8 @@ public:
             case KindsOfAction::BET:
             case KindsOfAction::CALL:
             case KindsOfAction::RAISE:
-                float bet_amount = std::get<1>(player_action);
-                *minimum_bet = bet_amount;  
-                player->add_to_amount_bet(bet_amount);
-                pot += bet_amount;
+                pot += std::get<1>(player_action);
+                *minimum_bet = player->get_round_amount_bet();
         };
     }
 
@@ -172,12 +194,14 @@ private:
         switch (last_kind_of_action) {
             case KindsOfAction::CHECK:
             case KindsOfAction::FOLD:
-                return { KindsOfAction::CHECK, KindsOfAction::FOLD, KindsOfAction::BET };
+                return { KindsOfAction::CHECK, KindsOfAction::BET, KindsOfAction::FOLD};
             case KindsOfAction::BET:
             case KindsOfAction::CALL:
             case KindsOfAction::RAISE:
-                return { KindsOfAction::CALL, KindsOfAction::RAISE };
+                return { KindsOfAction::CALL, KindsOfAction::RAISE, KindsOfAction::FOLD };
             default:
+                // This is here so that the compiler doesn't throw a warning,
+                // though techinically we don't need it. 
                 return { KindsOfAction::CALL };
         };
     }

@@ -206,7 +206,7 @@ namespace HandEvaluator {
 			if (num_of_value_in_hand(get_card_value(c1), five_hand) == 2) {
 				// Found first distinct pair
 				for (Card c2 : five_hand) {
-					if (num_of_value_in_hand(get_card_value(c2), five_hand) == 2 && get_card_suit(c1) != get_card_suit(c2)) {
+					if (num_of_value_in_hand(get_card_value(c2), five_hand) == 2 && get_card_value(c1) != get_card_value(c2)) {
 						// Found second distinct pair
 						return true;
 					}
