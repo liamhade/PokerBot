@@ -27,11 +27,17 @@ public:
 
 	void set_cards(Cards cards);
 
+    void add_to_stack(float amount);
+
     void remove_from_stack(float amount);
     
     void prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet);
 
+    bool player_is_all_in();
+
     bool has_player_folded();
+
+    void unfold();
 
     void set_player_has_folded();
 
@@ -62,6 +68,10 @@ private:
     float get_user_bet_amount(float current_min_bet);
 
     void show_possible_actions(std::vector<KindsOfAction> actions);
+
+    float handle_betting(KindsOfAction user_action, float min_total_bet);
+
+    float handle_call(float call_amount);
 };
 
 #endif

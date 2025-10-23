@@ -12,43 +12,51 @@
 
 class Poker {
 public:
-    Poker(std::vector<Player> players_vec, DeckHandler deck_struct) {
+    Poker(std::vector<Player> players_vec, DeckHandler deck_handler) {
         players = players_vec;
-        deck = deck_struct;
+        deck = deck_handler;
     }
     
     void play() {
-        deal_player_cards();
-        show_header("PRE-FLOP");
-        betting_round();
-        if (all_but_one_folded()) {
+        while (1) {
+            community_cards = {};
+            pot = 0;
+            deck.reset();
+            reset_player_fold_states();
+            reset_player_bet_amounts_for_round();
+    
+            deal_player_cards();
+            show_header("PRE-FLOP");
+            betting_round();
+            if (all_but_one_folded()) {
+                announce_winner();
+                continue;
+            };
+            
+            show_header("FLOP");
+            add_community_cards(3);
+            show_community_cards();
+            betting_round();
+            if (all_but_one_folded()) {
+                announce_winner();
+                continue;
+            };
+            
+            show_header("TURN");
+            add_community_cards(1);
+            show_community_cards();
+            betting_round();
+            if (all_but_one_folded()) {
+                announce_winner();
+                continue;
+            };
+            
+            show_header("RIVER");
+            add_community_cards(1);
+            show_community_cards();
+            betting_round();
             announce_winner();
-            return;
-        };
-        
-        show_header("FLOP");
-        add_community_cards(3);
-        show_community_cards();
-        betting_round();
-        if (all_but_one_folded()) {
-            announce_winner();
-            return;
-        };
-        
-        show_header("TURN");
-        add_community_cards(1);
-        show_community_cards();
-        betting_round();
-        if (all_but_one_folded()) {
-            announce_winner();
-            return;
-        };
-        
-        show_header("RIVER");
-        add_community_cards(1);
-        show_community_cards();
-        betting_round();
-        announce_winner();
+        }
     }
 
     void show_community_cards() {
@@ -61,17 +69,24 @@ public:
         std::cout << "############\n" << std::endl;
     }
 
+    void reset_player_fold_states() {
+        for (Player& p : players) {
+            p.unfold();
+        }
+    }
+
     void announce_winner() {
-        // Winner is either because everyone folded
+        // Winner won either because everyone folded...
         if (all_but_one_folded()) {
-            for (Player p : players) {
+            for (Player& p : players) {
                 if (!p.has_player_folded()) {
-                    std::cout << p.get_name() << " has won the $" << pot << "pot!"  << std::endl;
+                    std::cout << p.get_name() << " has won the $" << pot << " pot!"  << std::endl;
+                    p.add_to_stack(pot);
                     return;
                 }
             }
         }
-        // Or the person with the best hand 
+        // or because they had the best hand 
         for (Player p : players) {
             if (!p.has_player_folded()) {
                 std::cout << p.get_name() << ": " << get_cards_str(p.get_hole_cards()) << std::endl;
@@ -81,6 +96,7 @@ public:
         // Show the person with the best hand.
         std::tuple<Player, Cards, HandRank> player_with_best_hand = HandEvaluator::player_with_best_hand(players, community_cards);
         show_winner_details(player_with_best_hand);
+        std::get<0>(player_with_best_hand).add_to_stack(pot);
     }
 
     void show_winner_details(std::tuple<Player, Cards, HandRank> winner_details)  {
@@ -113,6 +129,9 @@ public:
         reset_player_bet_amounts_for_round();
         while (1) {
             for (Player& p : players)  {
+                if (enough_players_are_all_in()) {
+                   return;
+                }
                 if (all_players_have_gone) {
                     // If every players has gone,
                     // then the round can end on any player.
@@ -204,6 +223,21 @@ private:
                 // though techinically we don't need it. 
                 return { KindsOfAction::CALL };
         };
+    }
+
+    bool enough_players_are_all_in() {
+        int num_all_in_players = 0;
+        for (Player p : players) {
+            if (p.player_is_all_in()) {
+                num_all_in_players++;
+            }
+        }
+        /*
+        In a two person game, if one player has more money than another player, then
+        the player with more money can't do anything because they have nobody to
+        play against.
+        */
+        return (players.size() - num_all_in_players) <= 1;
     }
 };
 

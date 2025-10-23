@@ -6,12 +6,13 @@
 struct DeckHandler {
 public:
     DeckHandler();    
+    void reset();
     void shuffle_deck();
     Card draw_card();
 
 private:
     Cards deck;
-    Cards construct_deck();
+    void construct_deck();
 };
 
 #endif

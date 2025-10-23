@@ -283,7 +283,7 @@ namespace HandEvaluator {
 		HandRank best_handrank;
 		Cards best_cards;
 
-		for (Player p : players) {
+		for (Player& p : players) {
 			if (!p.has_player_folded()) {
 				Cards seven_hand = community_cards;
 				for (Card c : p.get_hole_cards()) { seven_hand.push_back(c); };

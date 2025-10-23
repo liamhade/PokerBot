@@ -4,11 +4,13 @@
 
 - [x] Call should automatically put the minimum bet in
 
+- [ ] Handle side-pot mechanics
+
 - [ ] Add a simple poker engine
 
 - [ ] Handle ties
 
-- [ ] Handle multiple games
+- [x] Handle multiple games
 
 ## C++ Questions
 

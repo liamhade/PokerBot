@@ -8,6 +8,12 @@ DeckHandler::DeckHandler() {
 	shuffle_deck();
 }
     
+void DeckHandler::reset() {
+	deck = {};
+	construct_deck();
+	shuffle_deck();
+}
+
 void DeckHandler::shuffle_deck() {    
 	std::random_device rd;
 	std::mt19937 g(rd());
@@ -20,7 +26,7 @@ Card DeckHandler::draw_card() {
 	return card;
 }
 
-Cards DeckHandler::construct_deck() {
+void DeckHandler::construct_deck() {
 	for (int i=0; i<13; i++) {
 		CardValue c = static_cast<CardValue>(i);
 		for (int j=0; j<4; j++) {
@@ -28,5 +34,4 @@ Cards DeckHandler::construct_deck() {
 			deck.push_back(std::make_tuple(c, s));
 		};
 	};
-	return deck;
 }
