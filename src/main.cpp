@@ -92,10 +92,14 @@ unordered_map = {
 
     - What we did here:
         - We looked at the bet size
-        - We saw that Lisa did not bet enough
-        
+        - We saw that Lisa did not bet enough (but she went all in [see NOTES])
+            - We SPLIT THE BOT we looked at so that one has exactly enough for
+              her money, and the other has the remaining amount  
 
 NOTES:
+- Earlier, when we had the term for the "minimum total bets", what this actually was was
+  the minimum total bet size to satisfy all the pots.
+
 - We assume that if a player has not met the minimum total bet size, then their bet was an all-in bet.
 
 - Each pot has it's own minimum bet
