@@ -10,6 +10,107 @@
 #include "DeckHandler.h"
 #include "Player.h"
 
+/*
+#include <unordered_map>
+
+std::unordered_map<std::string, std::vector<float>> pot_contributions;
+
+vector<float> pots
+
+- "James" contributes $10 to the pot and is now all-in
+
+pots = { 10 }
+unordered_map = { 
+    "James": {10} 
+}
+
+- "Devin" contributes $20 to the pot
+
+pots = { 20, 10 }
+unordered_map = {
+    "James": {10, 0},
+    "Devin": {10, 10}
+}
+
+- "Jez" contributes $20 to the pot
+
+pots = {30, 20}
+unordered_map = {
+    "James": {10, 0},
+    "Devin": {10, 10},
+    "Jez":   {10, 10}
+}
+
+- James and Jez are all-in, but Devin is not.
+- "Stacy" bets $30
+- "Devin" calls.
+
+pots = {40, 30, 20}
+unordered_map = {
+    "James": {10,  0,  0},
+    "Devin": {10, 10, 10},
+    "Jez":   {10, 10,  0},
+    "Stacy": {10, 10, 10}
+}
+
+- "Gru" bets $5
+
+pots = {25, 20, 30, 20}
+unordered_map = {
+    "James": {5, 5,  0,  0},
+    "Devin": {5, 5, 10, 10},
+    "Jez":   {5, 5, 10,  0},
+    "Stacy": {5, 5, 10, 10},
+    "Gru":   {5, 0,  0,  0}
+}
+
+- "Ezazel" bets $7
+
+unordered_map = {
+    "James": {5, 2, 3,  0,  0},
+    "Devin": {5, 2, 3, 10, 10},
+    "Jez":   {5, 2, 3, 10,  0},
+    "Stacy": {5, 2, 3, 10, 10},
+    "Gru":   {5, 0, 0,  0,  0},
+    "Ezaze": {5, 2, 0,  0,  0},
+}
+
+OTHER SCENARIO
+
+- "Don" bets $20
+
+unordered_map = {
+    "James": {20},
+}
+
+- "Lisa" goes all in with $10
+
+unordered_map = {
+    "James": {10, 10},
+    "Lisa":  {10, 0},
+}
+
+    - What we did here:
+        - We looked at the bet size
+        - We saw that Lisa did not bet enough
+        
+
+NOTES:
+- We assume that if a player has not met the minimum total bet size, then their bet was an all-in bet.
+
+- Each pot has it's own minimum bet
+
+ - Whenver a player going all in can't completely fill a pot, a new sidepot is created
+    - What actions do we take when we are creating a new side pot?
+        - We are given a bet (<float>)
+        - for each pot, starting from the first one
+            - Check if the bet meets the minimum bet size for that pot
+            - if it does
+                - Add the bet to that bet
+
+*/
+
+
 class Poker {
 public:
     Poker(std::vector<Player> players_vec, DeckHandler deck_handler) {
