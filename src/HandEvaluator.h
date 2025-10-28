@@ -26,6 +26,7 @@ namespace HandEvaluator {
     Card get_high_card(Cards cards);
 	std::tuple<Cards, HandRank> best_five_hand_out_of_seven(Cards seven_hand);
     std::tuple<Player, Cards, HandRank> player_with_best_hand(std::vector<Player> players, Cards community_cards);
+    std::vector<std::tuple<Player, Cards, HandRank>> ranked_player_hands(std::vector<Player> players, Cards community_cards);
 };
 
 #endif

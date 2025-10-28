@@ -6,6 +6,12 @@
 
 - [ ] Handle side-pot mechanics
 
+- [ ] Not all pairs are created equal
+
+	- Create a way to compare pairs using different cards.
+
+	- Right now, we only use the high card to compare. 
+
 - [ ] Add a simple poker engine
 
 - [ ] Handle ties

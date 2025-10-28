@@ -11,109 +11,9 @@
 #include "Player.h"
 
 /*
-#include <unordered_map>
-
-std::unordered_map<std::string, std::vector<float>> pot_contributions;
-
-vector<float> pots
-
-- "James" contributes $10 to the pot and is now all-in
-
-pots = { 10 }
-unordered_map = { 
-    "James": {10} 
-}
-
-- "Devin" contributes $20 to the pot
-
-pots = { 20, 10 }
-unordered_map = {
-    "James": {10, 0},
-    "Devin": {10, 10}
-}
-
-- "Jez" contributes $20 to the pot
-
-pots = {30, 20}
-unordered_map = {
-    "James": {10, 0},
-    "Devin": {10, 10},
-    "Jez":   {10, 10}
-}
-
-- James and Jez are all-in, but Devin is not.
-- "Stacy" bets $30
-- "Devin" calls.
-
-pots = {40, 30, 20}
-unordered_map = {
-    "James": {10,  0,  0},
-    "Devin": {10, 10, 10},
-    "Jez":   {10, 10,  0},
-    "Stacy": {10, 10, 10}
-}
-
-- "Gru" bets $5
-
-pots = {25, 20, 30, 20}
-unordered_map = {
-    "James": {5, 5,  0,  0},
-    "Devin": {5, 5, 10, 10},
-    "Jez":   {5, 5, 10,  0},
-    "Stacy": {5, 5, 10, 10},
-    "Gru":   {5, 0,  0,  0}
-}
-
-- "Ezazel" bets $7
-
-unordered_map = {
-    "James": {5, 2, 3,  0,  0},
-    "Devin": {5, 2, 3, 10, 10},
-    "Jez":   {5, 2, 3, 10,  0},
-    "Stacy": {5, 2, 3, 10, 10},
-    "Gru":   {5, 0, 0,  0,  0},
-    "Ezaze": {5, 2, 0,  0,  0},
-}
-
-OTHER SCENARIO
-
-- "Don" bets $20
-
-unordered_map = {
-    "James": {20},
-}
-
-- "Lisa" goes all in with $10
-
-unordered_map = {
-    "James": {10, 10},
-    "Lisa":  {10, 0},
-}
-
-    - What we did here:
-        - We looked at the bet size
-        - We saw that Lisa did not bet enough (but she went all in [see NOTES])
-            - We SPLIT THE BOT we looked at so that one has exactly enough for
-              her money, and the other has the remaining amount  
-
-NOTES:
-- Earlier, when we had the term for the "minimum total bets", what this actually was was
-  the minimum total bet size to satisfy all the pots.
-
-- We assume that if a player has not met the minimum total bet size, then their bet was an all-in bet.
-
-- Each pot has it's own minimum bet
-
- - Whenver a player going all in can't completely fill a pot, a new sidepot is created
-    - What actions do we take when we are creating a new side pot?
-        - We are given a bet (<float>)
-        - for each pot, starting from the first one
-            - Check if the bet meets the minimum bet size for that pot
-            - if it does
-                - Add the bet to that bet
-
+Thank you to paparazzo from https://softwareengineering.stackexchange.com/questions/317640/poker-split-side-pots
+for helping me to realize that my side pop implementation was over-complicated.
 */
-
 
 class Poker {
 public:
@@ -127,14 +27,12 @@ public:
             community_cards = {};
             pot = 0;
             deck.reset();
-            reset_player_fold_states();
-            reset_player_bet_amounts_for_round();
     
             deal_player_cards();
             show_header("PRE-FLOP");
             betting_round();
             if (all_but_one_folded()) {
-                announce_winner();
+                declare_winner();
                 continue;
             };
             
@@ -143,7 +41,7 @@ public:
             show_community_cards();
             betting_round();
             if (all_but_one_folded()) {
-                announce_winner();
+                declare_winner();
                 continue;
             };
             
@@ -152,7 +50,7 @@ public:
             show_community_cards();
             betting_round();
             if (all_but_one_folded()) {
-                announce_winner();
+                declare_winner();
                 continue;
             };
             
@@ -160,7 +58,7 @@ public:
             add_community_cards(1);
             show_community_cards();
             betting_round();
-            announce_winner();
+            declare_winner();
         }
     }
 
@@ -180,28 +78,33 @@ public:
         }
     }
 
-    void announce_winner() {
-        // Winner won either because everyone folded...
+    void declare_winner() {
         if (all_but_one_folded()) {
+            // Winner won either because everyone folded...
             for (Player& p : players) {
                 if (!p.has_player_folded()) {
                     std::cout << p.get_name() << " has won the $" << pot << " pot!"  << std::endl;
                     p.add_to_stack(pot);
-                    return;
                 }
             }
         }
-        // or because they had the best hand 
-        for (Player p : players) {
-            if (!p.has_player_folded()) {
-                std::cout << p.get_name() << ": " << get_cards_str(p.get_hole_cards()) << std::endl;
+        else {
+            // Or because they had the best hand
+            // among all of the other winners.
+            for (Player p : players) {
+                if (!p.has_player_folded()) {
+                    std::cout << p.get_name() << ": " << get_cards_str(p.get_hole_cards()) << std::endl;
+                }
             }
+            std::cout << "Community cards: " << get_cards_str(community_cards) << std::endl;
+            // Show the person with the best hand.
+            std::tuple<Player, Cards, HandRank> player_with_best_hand = HandEvaluator::player_with_best_hand(players, community_cards);
+            show_winner_details(player_with_best_hand);
+            std::get<0>(player_with_best_hand).add_to_stack(pot);
         }
-        std::cout << "Community cards: " << get_cards_str(community_cards) << std::endl;
-        // Show the person with the best hand.
-        std::tuple<Player, Cards, HandRank> player_with_best_hand = HandEvaluator::player_with_best_hand(players, community_cards);
-        show_winner_details(player_with_best_hand);
-        std::get<0>(player_with_best_hand).add_to_stack(pot);
+
+        reset_player_fold_states();
+        reset_player_bet_amounts_for_round();
     }
 
     void show_winner_details(std::tuple<Player, Cards, HandRank> winner_details)  {
@@ -350,10 +253,25 @@ int main() {
     DeckHandler deck;
     Player p1(100, "Kenny Rogers");
     Player p2(100, "Dolly Parton");
+    Player p3(100, "Travis Kelce");
 
-    Poker game({ p1, p2 }, deck);
-    game.play();
+    p1.set_cards({ deck.draw_card(), deck.draw_card() });
+    p2.set_cards({ deck.draw_card(), deck.draw_card() });
+    p3.set_cards({ deck.draw_card(), deck.draw_card() });
 
-    // The game ends when one player folds, or, if both players bet the same amount
+    Cards community_cards = {
+        deck.draw_card(),
+        deck.draw_card(),
+        deck.draw_card(),
+        deck.draw_card(),
+        deck.draw_card(),
+
+    };
+    // Poker game({ p1, p2 }, deck);
+    // game.play();
+
+    std::vector<std::tuple<Player, Cards, HandRank>> rankings;
+    rankings = HandEvaluator::ranked_player_hands({ p1, p2, p3 }, community_cards);
+
     return 0;
 }
