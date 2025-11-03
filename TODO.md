@@ -6,6 +6,15 @@
 
 - [ ] Handle side-pot mechanics
 
+	- [ ] Fix issue with players stack not updating
+
+- [ ] Enable hands smaller than "7-hands" to be shown and computed.
+
+	- Right now, we can only show the hand rank if all five community cards
+	have been played.
+
+- [ ] End the betting round early depending on how players fold
+
 - [ ] Not all pairs are created equal
 
 	- Create a way to compare pairs using different cards.

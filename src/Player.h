@@ -43,16 +43,18 @@ public:
 
     void set_round_amount_bet(float amount);
 
+    void set_total_amount_bet(float amount);
+
     void add_to_amount_bet(float bet);
 
     float get_total_amount_bet();
 
     float get_round_amount_bet();
 
-    std::string get_name();
-
+    std::string get_name() const;
+    
     Cards get_hole_cards();
-
+    
 private:
     std::string name;
     float stack;

@@ -27,12 +27,14 @@ public:
             community_cards = {};
             pot = 0;
             deck.reset();
+            reset_player_fold_states();
+            reset_player_bet_amounts_for_round();
     
             deal_player_cards();
             show_header("PRE-FLOP");
             betting_round();
             if (all_but_one_folded()) {
-                declare_winner();
+                disperse_winnings(false);
                 continue;
             };
             
@@ -41,7 +43,7 @@ public:
             show_community_cards();
             betting_round();
             if (all_but_one_folded()) {
-                declare_winner();
+                disperse_winnings(false);
                 continue;
             };
             
@@ -50,7 +52,7 @@ public:
             show_community_cards();
             betting_round();
             if (all_but_one_folded()) {
-                declare_winner();
+                disperse_winnings(false);
                 continue;
             };
             
@@ -58,7 +60,7 @@ public:
             add_community_cards(1);
             show_community_cards();
             betting_round();
-            declare_winner();
+            disperse_winnings(true);
         }
     }
 
@@ -78,22 +80,32 @@ public:
         }
     }
 
-    /*
-    START : NEW_FUNCTIONS
-    */
-
     std::vector<std::tuple<Player, Cards, HandRank>> sorted_eligible_players() {
         std::vector<Player> eligible_players;
         for (Player& p : players) {
             if (!p.has_player_folded()) {
-                eligible_players.push_back(p);
+                eligible_players.push_back(&p);
             }
         }
         return HandEvaluator::ranked_player_hands(eligible_players, community_cards);;
     }
 
-    void disperse_winnings(std::vector<std::tuple<Player, Cards, HandRank>> ranked_eligible_players) {
-        std::vector<Player> deductable_players = players;
+    void show_winner_details(std::tuple<Player, Cards, HandRank> winner_details, float winnings, bool show_hand_details)  {
+        Player player     = std::get<0>(winner_details);
+        Cards cards       = std::get<1>(winner_details);
+        HandRank handrank = std::get<2>(winner_details);
+
+        std::cout << std::endl;
+        std::cout << player.get_name() <<" has won $" << winnings << std::endl;
+        if (show_hand_details) {
+            std::cout << " -- They had a " << KindsOfHand_2_string(std::get<0>(handrank));
+            std::cout << " with the cards: " << get_cards_str(cards) << std::endl;
+        }
+    }
+
+    void disperse_winnings(bool show_hand_details) {
+        std::vector<std::tuple<Player, Cards, HandRank>> ranked_eligible_players = sorted_eligible_players();
+        std::vector<std::string> players_already_awarded;
         float amount_player_won;
 
         while (pot > 0) {
@@ -102,72 +114,31 @@ public:
             // Haven't yet dispersed everything that was bet
             std::tuple<Player, Cards, HandRank> top_player_attrs = ranked_eligible_players[0];
             Player top_player = std::get<0>(top_player_attrs);
-
-            ranked_eligible_players.erase(ranked_eligible_players.begin());
-            deductable_players.erase(std::find(deductable_players.begin(), deductable_players.end(), top_player));
+            players_already_awarded.push_back(top_player.get_name());
             /*
             TODO: Handle the fact that "top_player" is a member of "deductible_players".
             */
 
-            for (Player& p : deductable_players) {
-                if (p.get_round_amount_bet() <= top_player.get_round_amount_bet()) {
+            for (Player& p : players) {
+                if (std::find(players_already_awarded.begin(), players_already_awarded.end(), p.get_name()) != players_already_awarded.end()) {
+                    // This player was already awarded there winnings.
+                    continue;
+                }
+
+                if (p.get_total_amount_bet() <= top_player.get_total_amount_bet()) {
                     // This player bet at most as much as the "top_player"
-                    amount_player_won += p.get_round_amount_bet();
-                    p.set_round_amount_bet(0);
+                    amount_player_won += p.get_total_amount_bet();
+                    p.set_total_amount_bet(0);
                 } else {
-                    amount_player_won += top_player.get_round_amount_bet();
-                    p.set_round_amount_bet(top_player.get_round_amount_bet());
+                    amount_player_won += top_player.get_total_amount_bet();
+                    p.set_total_amount_bet(top_player.get_total_amount_bet());
                 }
             }
-
-            amount_player_won += top_player.get_round_amount_bet();
+            amount_player_won += top_player.get_total_amount_bet();
+            show_winner_details(top_player_attrs, amount_player_won, show_hand_details);
             top_player.add_to_stack(amount_player_won);
             pot -= amount_player_won;
         }
-    }
-
-    /*
-    END : NEW FUNCTIONS
-    */
-
-    void declare_winner() {
-        if (all_but_one_folded()) {
-            // Winner won either because everyone folded...
-            for (Player& p : players) {
-                if (!p.has_player_folded()) {
-                    std::cout << p.get_name() << " has won the $" << pot << " pot!"  << std::endl;
-                    p.add_to_stack(pot);
-                }
-            }
-        }
-        else {
-            // Or because they had the best hand
-            // among all of the other winners.
-            for (Player p : players) {
-                if (!p.has_player_folded()) {
-                    std::cout << p.get_name() << ": " << get_cards_str(p.get_hole_cards()) << std::endl;
-                }
-            }
-            std::cout << "Community cards: " << get_cards_str(community_cards) << std::endl;
-            // Show the person with the best hand.
-            std::tuple<Player, Cards, HandRank> player_with_best_hand = HandEvaluator::player_with_best_hand(players, community_cards);
-            show_winner_details(player_with_best_hand);
-            std::get<0>(player_with_best_hand).add_to_stack(pot);
-        }
-
-        reset_player_fold_states();
-        reset_player_bet_amounts_for_round();
-    }
-
-    void show_winner_details(std::tuple<Player, Cards, HandRank> winner_details)  {
-        Player player     = std::get<0>(winner_details);
-        Cards cards       = std::get<1>(winner_details);
-        HandRank handrank = std::get<2>(winner_details);
-
-        std::cout << std::endl;
-        std::cout << player.get_name() <<" has won the $" << pot << " pot!" << std::endl;
-        std::cout << " --> They had a " << KindsOfHand_2_string(std::get<0>(handrank));
-        std::cout << " with the cards: " << get_cards_str(cards) << std::endl;
     }
 
     void add_community_cards(int n) {
@@ -307,25 +278,9 @@ int main() {
     DeckHandler deck;
     Player p1(100, "Kenny Rogers");
     Player p2(100, "Dolly Parton");
-    Player p3(100, "Travis Kelce");
 
-    p1.set_cards({ deck.draw_card(), deck.draw_card() });
-    p2.set_cards({ deck.draw_card(), deck.draw_card() });
-    p3.set_cards({ deck.draw_card(), deck.draw_card() });
-
-    Cards community_cards = {
-        deck.draw_card(),
-        deck.draw_card(),
-        deck.draw_card(),
-        deck.draw_card(),
-        deck.draw_card(),
-
-    };
-    // Poker game({ p1, p2 }, deck);
-    // game.play();
-
-    std::vector<std::tuple<Player, Cards, HandRank>> rankings;
-    rankings = HandEvaluator::ranked_player_hands({ p1, p2, p3 }, community_cards);
+    Poker game({ p1, p2 }, deck);
+    game.play();
 
     return 0;
 }

@@ -95,6 +95,10 @@ void Player::set_round_amount_bet(float amount) {
 	round_amount_bet = amount;
 }
 
+void Player::set_total_amount_bet(float amount) {
+	total_amount_bet = amount;
+}
+
 void Player::add_to_amount_bet(float bet) {
 	total_amount_bet += bet;
 	round_amount_bet += bet;
@@ -108,7 +112,7 @@ float Player::get_round_amount_bet() {
 	return round_amount_bet;
 }
 
-std::string Player::get_name() {
+std::string Player::get_name() const {
 	return name;
 }
 
