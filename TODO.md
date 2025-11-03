@@ -8,6 +8,8 @@
 
 	- [ ] Fix issue with players stack not updating
 
+		- [ ] change sorted_eligible_players to work with Player*""
+
 - [ ] Enable hands smaller than "7-hands" to be shown and computed.
 
 	- Right now, we can only show the hand rank if all five community cards
