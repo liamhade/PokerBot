@@ -78,6 +78,58 @@ public:
         }
     }
 
+    /*
+    START : NEW_FUNCTIONS
+    */
+
+    std::vector<std::tuple<Player, Cards, HandRank>> sorted_eligible_players() {
+        std::vector<Player> eligible_players;
+        for (Player& p : players) {
+            if (!p.has_player_folded()) {
+                eligible_players.push_back(p);
+            }
+        }
+        return HandEvaluator::ranked_player_hands(eligible_players, community_cards);;
+    }
+
+    void disperse_winnings(std::vector<std::tuple<Player, Cards, HandRank>> ranked_eligible_players) {
+        std::vector<Player> deductable_players = players;
+        float amount_player_won;
+
+        while (pot > 0) {
+            amount_player_won = 0;
+
+            // Haven't yet dispersed everything that was bet
+            std::tuple<Player, Cards, HandRank> top_player_attrs = ranked_eligible_players[0];
+            Player top_player = std::get<0>(top_player_attrs);
+
+            ranked_eligible_players.erase(ranked_eligible_players.begin());
+            deductable_players.erase(std::find(deductable_players.begin(), deductable_players.end(), top_player));
+            /*
+            TODO: Handle the fact that "top_player" is a member of "deductible_players".
+            */
+
+            for (Player& p : deductable_players) {
+                if (p.get_round_amount_bet() <= top_player.get_round_amount_bet()) {
+                    // This player bet at most as much as the "top_player"
+                    amount_player_won += p.get_round_amount_bet();
+                    p.set_round_amount_bet(0);
+                } else {
+                    amount_player_won += top_player.get_round_amount_bet();
+                    p.set_round_amount_bet(top_player.get_round_amount_bet());
+                }
+            }
+
+            amount_player_won += top_player.get_round_amount_bet();
+            top_player.add_to_stack(amount_player_won);
+            pot -= amount_player_won;
+        }
+    }
+
+    /*
+    END : NEW FUNCTIONS
+    */
+
     void declare_winner() {
         if (all_but_one_folded()) {
             // Winner won either because everyone folded...
@@ -151,6 +203,8 @@ public:
                     continue;
                 };
                 Action player_action = p.get_action(possible_actions, minimum_bet);
+                // TODO: What does this function do? Make the name more clear -- and split
+                // up unique code bits into different functions, if needed. 
                 update_game_using_player_action(&p, player_action, &minimum_bet);
                 possible_actions = get_possible_actions(player_action);
             };

@@ -12,7 +12,7 @@
 
 	- Right now, we only use the high card to compare. 
 
-- [ ] Add a simple poker engine
+- [ ] Add a simple poker engine to play against
 
 - [ ] Handle ties
 
