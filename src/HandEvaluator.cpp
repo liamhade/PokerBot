@@ -315,24 +315,25 @@ namespace HandEvaluator {
 		return std::make_tuple(best_player, best_cards, best_handrank);
 	}
 
-	bool _compare_player_hand_tuple(std::tuple<Player, Cards, HandRank> hand_tuple1, std::tuple<Player, Cards, HandRank> hand_tuple2) {
-		// Helper function for "ranked_player_hands"
+	bool _compare_player_hand_tuple(std::tuple<Player*, Cards, HandRank> hand_tuple1, std::tuple<Player*, Cards, HandRank> hand_tuple2) {
 		HandRank handrank1 = std::get<2>(hand_tuple1);
 		HandRank handrank2 = std::get<2>(hand_tuple2);
 		// Adding the ! so that the first element in the list will be highest ranking.
 		return !handrank_lte(handrank1, handrank2);
 	}
 
-	std::vector<std::tuple<Player, Cards, HandRank>> ranked_player_hands(std::vector<Player> players, Cards community_cards) {
-		std::vector<std::tuple<Player, Cards, HandRank>> rank_hands;
+	std::vector<std::tuple<Player*, Cards, HandRank>> ranked_player_hands(std::vector<Player*> players, Cards community_cards) {
+		std::vector<std::tuple<Player*, Cards, HandRank>> rank_hands;
 		Cards players_seven_hand;
 		std::tuple<Cards, HandRank> players_best_hand;
 		HandRank players_best_handrank;
 		Cards    players_best_cards;
 
-		for (Player& p: players) {
-			if (!p.has_player_folded()) {
-				players_seven_hand = get_players_seven_hand(p.get_hole_cards(), community_cards);
+		for (Player* p: players) {
+			printf("");
+
+			if (!p->has_player_folded()) {
+				players_seven_hand = get_players_seven_hand(p->get_hole_cards(), community_cards);
 				players_best_hand = best_five_hand_out_of_seven(players_seven_hand);
 
 				// Unpacking tuple

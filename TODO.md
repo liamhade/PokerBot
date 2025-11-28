@@ -6,9 +6,13 @@
 
 - [ ] Handle side-pot mechanics
 
-	- [ ] Fix issue with players stack not updating
+	- [x] Fix issue with players stack not updating
 
-		- [ ] change sorted_eligible_players to work with Player*""
+		- [x] change sorted_eligible_players to work with Player*""
+
+	- [ ] Allow multiple players to be awarded after game is over  
+
+		- Right now, only one player can win the whole stack. 
 
 - [ ] Enable hands smaller than "7-hands" to be shown and computed.
 
@@ -28,6 +32,10 @@
 - [ ] Handle ties
 
 - [x] Handle multiple games
+
+## Organization
+
+- [ ] Simplify the logic in disperse_winnings()
 
 ## C++ Questions
 

@@ -80,8 +80,8 @@ public:
         }
     }
 
-    std::vector<std::tuple<Player, Cards, HandRank>> sorted_eligible_players() {
-        std::vector<Player> eligible_players;
+    std::vector<std::tuple<Player*, Cards, HandRank>> sorted_non_folded_players() {
+        std::vector<Player*> eligible_players;
         for (Player& p : players) {
             if (!p.has_player_folded()) {
                 eligible_players.push_back(&p);
@@ -90,10 +90,10 @@ public:
         return HandEvaluator::ranked_player_hands(eligible_players, community_cards);;
     }
 
-    void show_winner_details(std::tuple<Player, Cards, HandRank> winner_details, float winnings, bool show_hand_details)  {
-        Player player     = std::get<0>(winner_details);
-        Cards cards       = std::get<1>(winner_details);
-        HandRank handrank = std::get<2>(winner_details);
+    void show_winner_details(std::tuple<Player*, Cards, HandRank> winner_details, float winnings, bool show_hand_details)  {
+        Player player     = *(std::get<0>(winner_details));
+        Cards cards       =   std::get<1>(winner_details);
+        HandRank handrank =   std::get<2>(winner_details);
 
         std::cout << std::endl;
         std::cout << player.get_name() <<" has won $" << winnings << std::endl;
@@ -104,7 +104,7 @@ public:
     }
 
     void disperse_winnings(bool show_hand_details) {
-        std::vector<std::tuple<Player, Cards, HandRank>> ranked_eligible_players = sorted_eligible_players();
+        std::vector<std::tuple<Player*, Cards, HandRank>> ranked_non_folded_players = sorted_non_folded_players();
         std::vector<std::string> players_already_awarded;
         float amount_player_won;
 
@@ -112,31 +112,33 @@ public:
             amount_player_won = 0;
 
             // Haven't yet dispersed everything that was bet
-            std::tuple<Player, Cards, HandRank> top_player_attrs = ranked_eligible_players[0];
-            Player top_player = std::get<0>(top_player_attrs);
-            players_already_awarded.push_back(top_player.get_name());
+            std::tuple<Player*, Cards, HandRank> top_player_attrs = ranked_non_folded_players[0];
+            Player* top_player = std::get<0>(top_player_attrs);
+            players_already_awarded.push_back(top_player->get_name());
+            
             /*
             TODO: Handle the fact that "top_player" is a member of "deductible_players".
             */
 
             for (Player& p : players) {
+
                 if (std::find(players_already_awarded.begin(), players_already_awarded.end(), p.get_name()) != players_already_awarded.end()) {
                     // This player was already awarded there winnings.
                     continue;
                 }
 
-                if (p.get_total_amount_bet() <= top_player.get_total_amount_bet()) {
+                if (p.get_total_amount_bet() <= top_player->get_total_amount_bet()) {
                     // This player bet at most as much as the "top_player"
                     amount_player_won += p.get_total_amount_bet();
                     p.set_total_amount_bet(0);
                 } else {
-                    amount_player_won += top_player.get_total_amount_bet();
-                    p.set_total_amount_bet(top_player.get_total_amount_bet());
+                    amount_player_won += top_player->get_total_amount_bet();
+                    p.set_total_amount_bet(top_player->get_total_amount_bet());
                 }
             }
-            amount_player_won += top_player.get_total_amount_bet();
+            amount_player_won += top_player->get_total_amount_bet();
             show_winner_details(top_player_attrs, amount_player_won, show_hand_details);
-            top_player.add_to_stack(amount_player_won);
+            top_player->add_to_stack(amount_player_won);
             pot -= amount_player_won;
         }
     }
@@ -278,8 +280,9 @@ int main() {
     DeckHandler deck;
     Player p1(100, "Kenny Rogers");
     Player p2(100, "Dolly Parton");
+    Player p3(100, "DeVon Achane");
 
-    Poker game({ p1, p2 }, deck);
+    Poker game({ p1, p2, p3 }, deck);
     game.play();
 
     return 0;
