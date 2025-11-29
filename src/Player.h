@@ -9,6 +9,7 @@ enum class KindsOfAction {
     CHECK,
     BET,
     CALL,
+    ALL_IN,
     RAISE,
     FOLD,
 };
@@ -23,7 +24,9 @@ public:
 
     void show_player_info();
 
-    Action get_action(std::vector<KindsOfAction> possible_actions, float current_min_bet);
+    std::vector<KindsOfAction> get_possible_actions_for_player(float minimum_bet);
+
+    Action get_action(float current_min_bet);
 
 	void set_cards(Cards cards);
 
@@ -33,7 +36,7 @@ public:
     
     void prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet);
 
-    bool player_is_all_in();
+    bool is_all_in();
 
     bool has_player_folded();
 

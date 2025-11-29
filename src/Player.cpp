@@ -2,17 +2,22 @@
 #include <iostream>
 
 std::string action_enum_2_string(KindsOfAction action) {
-    if (action == KindsOfAction::CHECK) {
-        return "CHECK";
-    } else if (action == KindsOfAction::BET) {
-        return "BET";
-    } else if (action == KindsOfAction::CALL) {
-        return "CALL";
-    } else if (action == KindsOfAction::RAISE) {
-        return "RAISE";
-    } else {
-        return "FOLD";
-    };
+	switch (action) {
+		case KindsOfAction::CHECK:
+			return "CHECK";
+		case KindsOfAction::BET:
+			return "BET";
+		case KindsOfAction::CALL:
+			return "CALL";
+		case KindsOfAction::RAISE:
+			return "RAISE";
+		case KindsOfAction::ALL_IN:
+			return "ALL IN";
+		case KindsOfAction::FOLD:
+			return "FOLD";
+		default:
+			return "ERROR";
+	}
 }
 
 Player::Player(float starting_stack, std::string player_name) {
@@ -27,9 +32,28 @@ void Player::show_player_info() {
 	std::cout << "Hand : " << get_cards_str(pocket) << std::endl;
 }
 
-Action Player::get_action(std::vector<KindsOfAction> possible_actions, float min_total_bet) {
-	float bet_amount;
+std::vector<KindsOfAction> Player::get_possible_actions_for_player(float minimum_bet) {
+	if (get_round_amount_bet() == minimum_bet) {
+		// No bets to meet
+		return { KindsOfAction::CHECK, KindsOfAction::BET, KindsOfAction::ALL_IN, KindsOfAction::FOLD };
+	} else if (get_round_amount_bet() < minimum_bet) {
+		// Player needs to atleast match the minimum bet, or fold.
+		float bet_delta = minimum_bet - get_round_amount_bet();
+		if (stack > bet_delta) {
+			return { KindsOfAction::CALL, KindsOfAction::RAISE, KindsOfAction::ALL_IN, KindsOfAction::FOLD };
+		} else {
+			return { KindsOfAction::ALL_IN, KindsOfAction::FOLD };
+		}
+	} else {
+		// Should never happen
+		throw 400;
+	}
+}
+
+Action Player::get_action(float min_total_bet) {
+	std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
 	KindsOfAction user_action;
+	float bet_amount;
 	
 	prompt_user_with_options(possible_actions,  min_total_bet);
 	user_action = get_user_action_type(possible_actions);    
@@ -44,11 +68,15 @@ Action Player::get_action(std::vector<KindsOfAction> possible_actions, float min
 
 float Player::handle_betting(KindsOfAction user_action, float min_total_bet) {
 	float bet_amount = 0;
+
 	if (user_action == KindsOfAction::CALL) {
-		bet_amount = handle_call(min_total_bet);
+		bet_amount = handle_call(min_total_bet); 
+	} else if (user_action == KindsOfAction::ALL_IN) {
+		bet_amount = stack;
 	} else {
 		bet_amount = get_user_bet_amount(min_total_bet);
 	}
+	
 	add_to_amount_bet(bet_amount);
 	remove_from_stack(bet_amount);
 	return bet_amount;
@@ -135,11 +163,11 @@ KindsOfAction Player::get_user_action_type(std::vector<KindsOfAction> possible_a
 }
 
 bool Player::actions_is_kind_of_bet(KindsOfAction action) {
-	return action == KindsOfAction::CALL || action == KindsOfAction::RAISE || action == KindsOfAction::BET;
+	return action == KindsOfAction::CALL || action == KindsOfAction::RAISE || action == KindsOfAction::BET || action == KindsOfAction::ALL_IN;
 }
 
-bool Player::player_is_all_in() {
-	return (stack == 0) && (has_folded == false) && (round_amount_bet > 0);
+bool Player::is_all_in() {
+	return (stack == 0) && (has_folded == false);
 }
 
 float Player::get_user_bet_amount(float current_min_bet) {

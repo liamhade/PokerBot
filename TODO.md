@@ -10,9 +10,9 @@
 
 		- [x] change sorted_eligible_players to work with Player*""
 
-	- [ ] Allow multiple players to be awarded after game is over  
+	- [x] Allow multiple players to be awarded after game is over  
 
-		- Right now, only one player can win the whole stack. 
+	- [x] Allow a player to go all in
 
 - [ ] Enable hands smaller than "7-hands" to be shown and computed.
 
