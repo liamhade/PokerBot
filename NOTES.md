@@ -15,3 +15,8 @@
 
     --> Made it so that we only deal with the points of players, not the actual player objects.
 
+## Problem 3
+
+(?) Why are we getting an error with stl_vector.h
+
+    - The error happens after a winner is declared. 

@@ -42,32 +42,26 @@ public:
             show_header("FLOP");
             add_community_cards(3);
             show_community_cards();
-            if (num_players_not_all_in() > 1) {
-                betting_round();
-                if (all_but_one_folded()) {
-                    disperse_winnings(false);
-                    continue;
-                };
-            }
+            betting_round();
+            if (all_but_one_folded()) {
+                disperse_winnings(false);
+                continue;
+            };
             
             show_header("TURN");
             add_community_cards(1);
             show_community_cards();
-            if (num_players_not_all_in() > 1) {
-                betting_round();
-                if (all_but_one_folded()) {
-                    disperse_winnings(false);
-                    continue;
-                };
-            }
+            betting_round();
+            if (all_but_one_folded()) {
+                disperse_winnings(false);
+                continue;
+            };
             
             show_header("RIVER");
             add_community_cards(1);
             show_community_cards();
-            if (num_players_not_all_in() > 1) {
-                betting_round();
-                disperse_winnings(true);
-            }
+            betting_round();
+            disperse_winnings(true);
         }
     }
 
@@ -94,7 +88,7 @@ public:
                 eligible_players.push_back(&p);
             }
         }
-        return HandEvaluator::ranked_player_hands(eligible_players, community_cards);;
+        return HandEvaluator::ranked_player_hands(eligible_players, community_cards);
     }
 
     void show_winner_details(tuple<Player*, Cards, HandRank> winner_details, float winnings, bool show_hand_details)  {
@@ -111,21 +105,34 @@ public:
     }
 
     void disperse_winnings(bool show_hand_details) {
-        vector<tuple<Player*, Cards, HandRank>> ranked_non_folded_players = sorted_non_folded_players();
-        
-        for (tuple<Player*, Cards, HandRank> player_tuple : ranked_non_folded_players) {
-            Player* player = get<0>(player_tuple);
-            float amount_player_won_overall = 0;
-            float amount_player_bet = player->get_total_amount_bet();
-
-            for (Player& paying_player : players) {
-                float amount_won_from_player = min(amount_player_bet, paying_player.get_total_amount_bet()); 
-                player->add_to_stack(amount_won_from_player);
-                paying_player.set_total_amount_bet(paying_player.get_total_amount_bet() - amount_won_from_player);
-                amount_player_won_overall += amount_won_from_player;
+        if (all_but_one_folded()) {
+            // Only one non-folding player, which means we may not have reach the river (5 community cards).
+            for (Player& player: players) {
+                if (!player.has_player_folded()) {
+                    // Grabbing only player who hasn't folded.
+                    player.add_to_stack(pot);
+                    cout << player.get_name() << " won $" << pot << " because they were the only one not to fold." << endl;
+                    pot = 0;
+                    return;
+                }
             }
-            if (amount_player_won_overall > 0) {
-                show_winner_details(player_tuple, amount_player_won_overall, show_hand_details);
+        } else {
+            // More than one non-folding players, which means we reached the river card.
+            vector<tuple<Player*, Cards, HandRank>> ranked_non_folded_players = sorted_non_folded_players();
+            for (tuple<Player*, Cards, HandRank> player_tuple : ranked_non_folded_players) {
+                Player* player = get<0>(player_tuple);
+                float amount_player_won_overall = 0;
+                float amount_player_bet = player->get_total_amount_bet();
+    
+                for (Player& paying_player : players) {
+                    float amount_won_from_player = min(amount_player_bet, paying_player.get_total_amount_bet()); 
+                    player->add_to_stack(amount_won_from_player);
+                    paying_player.set_total_amount_bet(paying_player.get_total_amount_bet() - amount_won_from_player);
+                    amount_player_won_overall += amount_won_from_player;
+                }
+                if (amount_player_won_overall > 0) {
+                    show_winner_details(player_tuple, amount_player_won_overall, show_hand_details);
+                }
             }
         }
     }
@@ -158,21 +165,19 @@ public:
         reset_player_bet_amounts_for_round();
 
         while (1) {
-            if (all_players_have_gone && round_is_over(minimum_bet)) {
+            if ((all_players_have_gone && round_is_over(minimum_bet)) || (num_players_not_all_in() <= 1)) {
                 return;
             }
-
             for (Player& p : players)  {
                 if (p.has_player_folded()) {
-                    printf("Skipping %s because they folded. \n", p.get_name().c_str());
+                    cout << "Skipping " << p.get_name() << " because they folded." << endl;
                 } else if (p.is_all_in()) {
-                    printf("Skipping %s because they are all in. \n", p.get_name().c_str());
+                    cout << "Skipping " << p.get_name() << " because they are all in." << endl;
                 } else {
                     Action player_action = p.get_action(minimum_bet);
                     update_game_using_player_action(&p, player_action, &minimum_bet);
                 }
             };
-
             all_players_have_gone = true;
         }
     }
