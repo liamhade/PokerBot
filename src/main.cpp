@@ -81,7 +81,7 @@ public:
         }
     }
 
-    vector<tuple<Player*, Cards, HandRank>> sorted_non_folded_players() {
+    vector<vector<tuple<Player*, Cards, HandRank>>> sorted_non_folded_players() {
         vector<Player*> eligible_players;
         for (Player& p : players) {
             if (!p.has_player_folded()) {
@@ -99,7 +99,7 @@ public:
         cout << endl;
         cout << player->get_name() <<" has won $" << winnings << endl;
         if (show_hand_details) {
-            cout << " -- They had a " << KindsOfHand_2_string(get<0>(handrank));
+            cout << " -- They had a " << KindsOfHand_2_string(handrank.kind_of_hand);
             cout << " with the cards: " << get_cards_str(cards) << endl;
         }
     }
@@ -108,8 +108,8 @@ public:
         if (all_but_one_folded()) {
             // Only one non-folding player, which means we may not have reach the river (5 community cards).
             for (Player& player: players) {
+                // Grabbing only player who hasn't folded.
                 if (!player.has_player_folded()) {
-                    // Grabbing only player who hasn't folded.
                     player.add_to_stack(pot);
                     cout << player.get_name() << " won $" << pot << " because they were the only one not to fold." << endl;
                     pot = 0;
@@ -118,13 +118,17 @@ public:
             }
         } else {
             // More than one non-folding players, which means we reached the river card.
-            vector<tuple<Player*, Cards, HandRank>> ranked_non_folded_players = sorted_non_folded_players();
-            for (tuple<Player*, Cards, HandRank> player_tuple : ranked_non_folded_players) {
+            vector<vector<tuple<Player*, Cards, HandRank>>> ranked_non_folded_players = sorted_non_folded_players();
+            
+            for (vector<tuple<Player*, Cards, HandRank>> winner_group : ranked_non_folded_players) {
+                // All players in the same winning group split the winnings according to how much they bet.
+                
                 Player* player = get<0>(player_tuple);
                 float amount_player_won_overall = 0;
                 float amount_player_bet = player->get_total_amount_bet();
     
                 for (Player& paying_player : players) {
+                    // TODO: Skip players in the same winner group, expect if that player is yourself. 
                     float amount_won_from_player = min(amount_player_bet, paying_player.get_total_amount_bet()); 
                     player->add_to_stack(amount_won_from_player);
                     paying_player.set_total_amount_bet(paying_player.get_total_amount_bet() - amount_won_from_player);

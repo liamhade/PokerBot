@@ -1,10 +1,41 @@
 ## Game Mechanics 
 
+- [ ] End the betting round early depending on how players fold
+
+- [ ] Add a simple poker engine to play against
+
+- [ ] Handle ties
+
+
+## Organization
+
+- [ ] (In `PotDispersal.cpp`) Replace use of `float` in tuple with `.total_amount_bet()` to simplify the code. 
+
+- [ ] Move `disperse_winnings()` to a seperate module
+
+- [ ] Simplify the logic in `disperse_winnings()`
+
+## C++ Questions
+
+- [ ] Convert action_enum_2_string to use switch statement instead
+
+## Solved
+
+- [x] Handle multiple games
+
+- [x] Not all pairs are created equal
+
+	- Create a way to compare pairs using different cards.
+
+	- Right now, we only use the high card to compare. 
+
+- [x] What's the proper way to use printf?
+
 - [x] If the minimum bet is more than the current player's total stack, then they must go all in.
 
 - [x] Call should automatically put the minimum bet in
 
-- [ ] Handle side-pot mechanics
+- [x] Handle side-pot mechanics
 
 	- [x] Fix issue with players stack not updating
 
@@ -13,32 +44,3 @@
 	- [x] Allow multiple players to be awarded after game is over  
 
 	- [x] Allow a player to go all in
-
-- [ ] Enable hands smaller than "7-hands" to be shown and computed.
-
-	- Right now, we can only show the hand rank if all five community cards
-	have been played.
-
-- [ ] End the betting round early depending on how players fold
-
-- [ ] Not all pairs are created equal
-
-	- Create a way to compare pairs using different cards.
-
-	- Right now, we only use the high card to compare. 
-
-- [ ] Add a simple poker engine to play against
-
-- [ ] Handle ties
-
-- [x] Handle multiple games
-
-## Organization
-
-- [ ] Simplify the logic in disperse_winnings()
-
-## C++ Questions
-
-- [ ] Convert action_enum_2_string to use switch statement instead
-
-- [x] What's the proper way to use printf?
