@@ -6,10 +6,6 @@
 
 - [ ] End the betting round early depending on how players fold
 
-## Bugs
-
-- [ ] Infinite loop with three players (see `Errors` file) 
-
 ## Organization
 
 - [ ] (In `PotDispersal.cpp`) Replace use of `float` in tuple with `.total_amount_bet()` to simplify the code. 
@@ -19,6 +15,8 @@
 - [ ] Convert action_enum_2_string to use switch statement instead
 
 ## Solved
+
+- [x] Infinite loop with three players (see `Errors` file) 
 
 - [x] Remove `Poker` module from `main.cpp` 
 
