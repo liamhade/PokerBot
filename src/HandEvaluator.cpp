@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include <tuple>
-#include "HandEvaluator.h"
-#include "Player.h"
+#include "../include/HandEvaluator.h"
+#include "../include/Player.h"
 
 using namespace std;
 

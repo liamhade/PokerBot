@@ -38,6 +38,8 @@ public:
 
     bool is_all_in();
 
+    bool has_no_money();
+
     bool has_player_folded();
 
     void unfold();
@@ -49,6 +51,8 @@ public:
     void set_total_amount_bet(float amount);
 
     void add_to_amount_bet(float bet);
+
+    float get_stack();
 
     float get_total_amount_bet();
 

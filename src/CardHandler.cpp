@@ -1,4 +1,4 @@
-#include "CardHandler.h"
+#include "../include/CardHandler.h"
 #include <iostream>
 
 Suit get_card_suit(Card c) { 

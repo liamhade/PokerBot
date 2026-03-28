@@ -1,25 +1,30 @@
 ## Game Mechanics 
 
-- [ ] End the betting round early depending on how players fold
+- [ ] Add the sound of chips when a player bets 
 
 - [ ] Add a simple poker engine to play against
 
-- [ ] Handle ties
+- [ ] End the betting round early depending on how players fold
 
+## Bugs
+
+- [ ] Infinite loop with three players (see `Errors` file) 
 
 ## Organization
 
 - [ ] (In `PotDispersal.cpp`) Replace use of `float` in tuple with `.total_amount_bet()` to simplify the code. 
-
-- [ ] Move `disperse_winnings()` to a seperate module
-
-- [ ] Simplify the logic in `disperse_winnings()`
 
 ## C++ Questions
 
 - [ ] Convert action_enum_2_string to use switch statement instead
 
 ## Solved
+
+- [x] Remove `Poker` module from `main.cpp` 
+
+- [x] Add more spaces to the UI
+
+- [x] Handle ties
 
 - [x] Handle multiple games
 
@@ -44,3 +49,7 @@
 	- [x] Allow multiple players to be awarded after game is over  
 
 	- [x] Allow a player to go all in
+
+- [x] Move `disperse_winnings()` to a seperate module
+
+- [x] Simplify the logic in `disperse_winnings()`

@@ -10,6 +10,6 @@ typedef tuple<vector<Player*>, float> SidePot;
 
 vector<SidePot> create_sidepots(vector<Player*> players); 
 
-void disperse_sidepot_funds_to_winners(PlayerWithHandRank player_handranks, vector<SidePot> sidepots);
+void disperse_sidepot_funds_to_winners(vector<vector<PlayerWithHandRank>> winning_groups, vector<SidePot> sidepots, bool show_outcome);
 
 #endif

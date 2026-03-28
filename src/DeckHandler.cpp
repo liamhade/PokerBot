@@ -1,7 +1,7 @@
 #include <random>
 #include <algorithm>
-#include "CardHandler.h"
-#include "DeckHandler.h"
+#include "../include/CardHandler.h"
+#include "../include/DeckHandler.h"
 
 DeckHandler::DeckHandler() {
 	construct_deck();

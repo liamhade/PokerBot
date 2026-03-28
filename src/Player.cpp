@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "../include/Player.h"
 #include <iostream>
 
 std::string action_enum_2_string(KindsOfAction action) {
@@ -27,9 +27,9 @@ Player::Player(float starting_stack, std::string player_name) {
 }
 
 void Player::show_player_info() {
-	std::cout << "Player: " << name << std::endl;
-	std::cout << "Stack: " << stack << std::endl;
-	std::cout << "Hand : " << get_cards_str(pocket) << std::endl;
+	std::cout << "Player : " << "\033[1m" << name << "\033[0m" << std::endl;
+	std::cout << "Stack  : " << stack << std::endl;
+	std::cout << "Hand   : " << get_cards_str(pocket) << std::endl << std::endl;
 }
 
 std::vector<KindsOfAction> Player::get_possible_actions_for_player(float minimum_bet) {
@@ -131,6 +131,9 @@ void Player::add_to_amount_bet(float bet) {
 	total_amount_bet += bet;
 	round_amount_bet += bet;
 }
+float Player::get_stack() {
+	return stack;
+}
 
 float Player::get_total_amount_bet() {
 	return total_amount_bet;
@@ -151,7 +154,7 @@ Cards Player::get_hole_cards() {
 void Player::prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet) {
 	Player::show_player_info();
 	std::cout << "Minimum total bet this round: " << minimum_bet << std::endl;
-	std::cout << "Amount player bet this round: " << round_amount_bet << std::endl;
+	std::cout << "Amount player bet this round: " << round_amount_bet << std::endl << std::endl;
 	show_possible_actions(possible_actions);
 }
 
@@ -167,7 +170,11 @@ bool Player::actions_is_kind_of_bet(KindsOfAction action) {
 }
 
 bool Player::is_all_in() {
-	return (stack == 0) && (has_folded == false);
+	return (stack == 0) && (has_folded == false) && (total_amount_bet > 0);
+}
+
+bool Player::has_no_money() {
+	return (stack == 0) && (total_amount_bet == 0);
 }
 
 float Player::get_user_bet_amount(float current_min_bet) {

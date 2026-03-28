@@ -4,7 +4,7 @@
             "name": "C/C++: g++.exe build and debug main.cpp",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\bin\\${fileBasenameNoExtension}.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

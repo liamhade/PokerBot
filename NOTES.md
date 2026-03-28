@@ -1,4 +1,15 @@
-# 2/22/25
+# 2/24/26
+
+We fixed the issue with the money not being dispersed correctly.
+
+# 2/23/26
+
+The code is compiling, which is good. But now we're running into issues where the money is not being dispersed correctly. Sometimes by the end of the round
+there's more money in circulation then we started the game.
+
+# 2/22/26
+
+Made some good progress today. Even though I moved the PotDispersal logic into a seperate function, it can still be made more modular.
 
 It's always a get idea to keep complicated logic in a seperate module. It makes the system easier to upgrade if you ever want to change anything. Plus, 
 
