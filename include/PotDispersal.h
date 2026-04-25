@@ -2,7 +2,7 @@
 #define POT_DISP_H
 
 #include "HandEvaluator.h"
-#include "Player.h"
+#include "PlayerInterface.h"
 #include <vector>
 #include <tuple>
 

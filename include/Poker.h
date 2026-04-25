@@ -21,7 +21,7 @@ for helping me to realize that my side pop implementation was over-complicated.
 
 class Poker {
 public:
-    Poker(vector<Player> players_vec, DeckHandler deck_handler);
+    Poker(vector<Player*> players, DeckHandler deck);
     
     void play();
 
@@ -54,7 +54,7 @@ public:
     void update_game_using_player_action(Player* player, Action player_action, float* minimum_bet);
 
 private:
-    vector<Player> players;
+    vector<Player*> players;
     DeckHandler deck;
     float pot = 0.0;
     Cards community_cards;

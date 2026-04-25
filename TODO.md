@@ -1,8 +1,16 @@
 ## Game Mechanics 
 
-- [ ] Add the sound of chips when a player bets 
-
 - [ ] Add a simple poker engine to play against
+
+	- [x] Convert the classes to Abstract Base Classes.
+
+	- [ ] Print out whether the player is a User or a Bot next to their name. 
+
+	- [ ] Print out the Players action (Action Name and bet size) after they make it.
+
+	- [ ] Add a short pause between player turns to increase flow.
+
+- [ ] Add the sound of chips when a player bets 
 
 - [ ] End the betting round early depending on how players fold
 

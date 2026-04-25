@@ -5,7 +5,7 @@ using namespace std;
 
 #include <tuple>
 #include "CardHandler.h"
-#include "Player.h"
+#include "PlayerInterface.h"
 
 
 enum class KindsOfHand { 

@@ -9,7 +9,7 @@
 #include "../include/CardHandler.h"
 #include "../include/DeckHandler.h"
 #include "../include/PotDispersal.h"
-#include "../include/Player.h"
+#include "../include/PlayerInterface.h"
 #include "../include/Poker.h"
 using namespace std;
 
@@ -18,9 +18,9 @@ Thank you to paparazzo from https://softwareengineering.stackexchange.com/questi
 for helping me to realize that my side pop implementation was over-complicated.
 */
 
-Poker::Poker(vector<Player> players_vec, DeckHandler deck_handler) {
-    players = players_vec;
-    deck = deck_handler;
+Poker::Poker(vector<Player*> players, DeckHandler deck) {
+    this->players = players;
+    this->deck    = deck;
 }
 
 void Poker::play() {
@@ -78,16 +78,16 @@ void Poker::show_community_cards() {
 
 
 void Poker::reset_player_fold_states() {
-    for (Player& p : players) {
-        p.unfold();
+    for (Player* p : players) {
+        p->unfold();
     }
 }
 
 vector<vector<tuple<Player*, Cards, HandRank>>> Poker::sorted_non_folded_players() {
     vector<Player*> eligible_players;
-    for (Player& p : players) {
-        if (!p.has_player_folded()) {
-            eligible_players.push_back(&p);
+    for (Player* p : players) {
+        if (!p->has_player_folded()) {
+            eligible_players.push_back(p);
         }
     }
     return HandEvaluator::ranked_player_hands(eligible_players, community_cards);
@@ -96,11 +96,11 @@ vector<vector<tuple<Player*, Cards, HandRank>>> Poker::sorted_non_folded_players
 void Poker::disperse_winnings(bool show_hand_details) {
     if (all_but_one_folded()) {
         // Only one non-folding player, which means we may not have reach the river (5 community cards).
-        for (Player& player: players) {
+        for (Player* player: players) {
             // Grabbing only player who hasn't folded.
-            if (!player.has_player_folded()) {
-                player.add_to_stack(pot);
-                cout << player.get_name() << " won $" << pot << " because they were the only one not to fold." << endl;
+            if (!player->has_player_folded()) {
+                player->add_to_stack(pot);
+                cout << player->get_name() << " won $" << pot << " because they were the only one not to fold." << endl;
                 pot = 0;
                 return;
             }
@@ -108,8 +108,8 @@ void Poker::disperse_winnings(bool show_hand_details) {
     } else {
         // Converting list of players to list of pointers to players.
         vector<Player*> player_pointers;
-        for (Player& player: players) {
-            player_pointers.push_back(&player);
+        for (Player* player: players) {
+            player_pointers.push_back(player);
         }
 
         // More than one non-folding players, which means we reached the river card.
@@ -127,8 +127,8 @@ void Poker::add_community_cards(int n) {
 
 int Poker::num_players_not_all_in() {
     int i = 0;
-    for (Player p : players) {
-        if (!p.has_player_folded() && !p.is_all_in()) {
+    for (Player* p : players) {
+        if (!p->has_player_folded() && !p->is_all_in()) {
             i++;
         }
     }
@@ -136,8 +136,8 @@ int Poker::num_players_not_all_in() {
 }
 
 void Poker::deal_player_cards() {
-    for (Player& p : players) {
-        p.set_cards({ deck.draw_card(), deck.draw_card() });
+    for (Player* p : players) {
+        p->set_cards({ deck.draw_card(), deck.draw_card() });
     }
 }
 
@@ -150,16 +150,16 @@ void Poker::betting_round() {
         if ((all_players_have_gone && round_is_over(minimum_bet))) {
             return;
         }
-        for (Player& p : players)  {
-            if (p.has_player_folded()) {
-                cout << "Skipping " << p.get_name() << " because they folded." << endl << endl;
-            } else if (p.is_all_in()) {
-                cout << "Skipping " << p.get_name() << " because they are all in." << endl << endl;
-            } else if (p.has_no_money()) {
-                cout << "Skipping " << p.get_name() << " because they have no money." << endl << endl;
+        for (Player* p : players)  {
+            if (p->has_player_folded()) {
+                cout << "Skipping " << p->get_name() << " because they folded." << endl << endl;
+            } else if (p->is_all_in()) {
+                cout << "Skipping " << p->get_name() << " because they are all in." << endl << endl;
+            } else if (p->has_no_money()) {
+                cout << "Skipping " << p->get_name() << " because they have no money." << endl << endl;
             } else {
-                Action player_action = p.get_action(minimum_bet);
-                update_game_using_player_action(&p, player_action, &minimum_bet);
+                Action player_action = p->get_action(minimum_bet);
+                update_game_using_player_action(p, player_action, &minimum_bet);
             }
         };
         all_players_have_gone = true;
@@ -167,23 +167,22 @@ void Poker::betting_round() {
 }
     
 void Poker::reset_player_total_bet_amounts() {
-    for (Player& p : players) {
-        p.set_total_amount_bet(0);
+    for (Player* p : players) {
+        p->set_total_amount_bet(0);
     }
 }
 
 void Poker::reset_player_bet_amounts_for_round() {
-    for (Player& p : players) {
-        p.set_round_amount_bet(0);
+    for (Player* p : players) {
+        p->set_round_amount_bet(0);
     }
 }
 
 bool Poker::round_is_over(float min_bet) {
-    for (int i = 0; i < players.size(); i++) {
-        Player p = players[i];
-        if (!(p.has_player_folded())) {
+    for (Player* p : players) {
+        if (!(p->has_player_folded())) {
             // Only examining players who haven't folded.
-            if (!(p.is_all_in() || (p.get_round_amount_bet() == min_bet))) {
+            if (!(p->is_all_in() || (p->get_round_amount_bet() == min_bet))) {
                 return false;
             }
         }
@@ -193,8 +192,8 @@ bool Poker::round_is_over(float min_bet) {
 
 bool Poker::all_but_one_folded() {
     int fold_count = 0;
-    for (Player p : players) {
-        if (p.has_player_folded()) {
+    for (Player* p : players) {
+        if (p->has_player_folded()) {
             fold_count++;
         }
     }

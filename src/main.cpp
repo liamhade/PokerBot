@@ -6,8 +6,9 @@
 #include <algorithm>
 #include <random>
 #include "../include/DeckHandler.h"
-#include "../include/Player.h"
 #include "../include/Poker.h"
+#include "../src/HumanPlayer.cpp"
+#include "../src/ComputerPlayer.cpp"
 using namespace std;
 
 /*
@@ -17,11 +18,10 @@ for helping me to realize that my side pop implementation was over-complicated.
 
 int main() {
     DeckHandler deck;
-    Player p1(100, "Kenny Rogers");
-    Player p2(100, "Dolly Parton");
-    Player p3(100, "Jimmy Buffet");
+    Human p1(100, "Kenny Rogers");
+    Bot p2(100, "James Dean");
 
-    Poker game({ p1, p2, p3 }, deck);
+    Poker game({ &p1, &p2 }, deck);
     game.play();
 
     return 0;

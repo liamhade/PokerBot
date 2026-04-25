@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <tuple>
 #include "../include/HandEvaluator.h"
-#include "../include/Player.h"
+#include "../include/PlayerInterface.h"
 
 using namespace std;
 
@@ -442,17 +442,21 @@ namespace HandEvaluator {
 		return seven_hand;
 	}
 
-	tuple<Player, Cards, HandRank> player_with_best_hand(vector<Player> players, Cards community_cards) {
+	tuple<Player*, Cards, HandRank> player_with_best_hand(vector<Player*> players, Cards community_cards) {
 		// Since we set our own constructors for the Player,
 		// we can't rely on the compiler to choose a default constructor.
 		int tuple_initialized = false;
-		Player best_player = Player(0, "none");
+
+		// TODO: We need to change the Player type to a Player pointer type.
+		// That way we can store both Human and Bot child classes. 
+
+		Player* best_player;
 		HandRank best_handrank;
 		Cards best_cards;
 
-		for (Player& p : players) {
-			if (!p.has_player_folded()) {
-				Cards seven_hand = get_players_seven_hand(p.get_hole_cards(), community_cards);
+		for (Player* p : players) {
+			if (!p->has_player_folded()) {
+				Cards seven_hand = get_players_seven_hand(p->get_hole_cards(), community_cards);
 				tuple<Cards, HandRank> players_handrank = best_five_hand_out_of_seven(seven_hand);
 			
 				if (!tuple_initialized) {
