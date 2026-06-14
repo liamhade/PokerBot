@@ -13,6 +13,8 @@ enum class KindsOfAction {
 
 using Action = std::tuple<KindsOfAction, float>;
 
+void show_action(Action action);
+
 std::string action_enum_2_string(KindsOfAction action);
 
 #endif

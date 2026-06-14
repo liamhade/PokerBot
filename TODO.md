@@ -4,15 +4,30 @@
 
 	- [x] Convert the classes to Abstract Base Classes.
 
-	- [ ] Print out whether the player is a User or a Bot next to their name. 
+	- [x] Print out whether the player is a User or a Bot next to their name. 
 
-	- [ ] Print out the Players action (Action Name and bet size) after they make it.
+	- [x] Print out the Players action (Action Name and bet size) after they make it.
 
-	- [ ] Add a short pause between player turns to increase flow.
+	- [x] Add a short pause between player turns to increase flow.
+
+	- [ ] Make it work on any user action
+	
+		- There are two basic kinds moves :
+			1) Fold
+			2) Bet
+				a) At least the minimum bet
+				b) All in 
+		
+		- [ ] Add the most basic strategy in, and expand on it later.
+	
+
+- [ ] Error handling if the user types in something that they can't do.
 
 - [ ] Add the sound of chips when a player bets 
 
 - [ ] End the betting round early depending on how players fold
+
+	- [ ] Make sure that player's cards aren't revealed if they everyone else folded.
 
 ## Organization
 

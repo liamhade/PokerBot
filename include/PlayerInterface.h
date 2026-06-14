@@ -20,11 +20,7 @@ public:
 
     virtual ~Player() {};
 
-    void show_player_info() {
-        std::cout << "Player : " << "\033[1m" << name << "\033[0m" << std::endl;
-        std::cout << "Stack  : " << stack << std::endl;
-        std::cout << "Hand   : " << get_cards_str(pocket) << std::endl << std::endl;
-    }
+    virtual void show_player_info() = 0;
 
     std::vector<KindsOfAction> get_possible_actions_for_player(float minimum_bet) {
         if (get_round_amount_bet() == minimum_bet) {

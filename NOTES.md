@@ -1,3 +1,7 @@
+# 4/26/26
+
+I got the Bot player to respond to user bets with calls. However, we're having some issues with the bets not registering, so I'll need to fix that in the next iteration. I also adjusted some of the formatting for the outputs to make them more aesthetic and easier to look at.
+
 # 2/24/26
 
 We fixed the issue with the money not being dispersed correctly.

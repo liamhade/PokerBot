@@ -6,6 +6,12 @@ class Human : public Player {
 public:
 	Human(float s, std::string n) : Player(s, n) {}
 
+	void show_player_info() {
+        std::cout << "USER  : " << "\033[1m" << name << "\033[0m" << std::endl;
+        std::cout << "Stack : " << stack << std::endl;
+        std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
+    };
+
 	Action get_action(float min_total_bet) {
 		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
 		KindsOfAction user_action;
@@ -48,8 +54,8 @@ public:
 		}
 	}
 
-	void prompt_user_with_options(std::vector<KindsOfAction> possible_actions,float minimum_bet) {
-		Player::show_player_info();
+	void prompt_user_with_options(std::vector<KindsOfAction> possible_actions, float minimum_bet) {
+		show_player_info();
 		std::cout << "Minimum total bet this round: " << minimum_bet << std::endl;
 		std::cout << "Amount player bet this round: " << round_amount_bet << std::endl << std::endl;
 		show_possible_actions(possible_actions);

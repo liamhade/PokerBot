@@ -6,21 +6,30 @@ class Bot : public Player {
 public:
 	Bot(float s, std::string n) : Player(s, n) {}
 
-	Action get_action(float min_total_bet) {
-		Player::show_player_info();
+	void show_player_info() {
+        std::cout << "BOT   : " << "\033[1m" << name << "\033[0m" << std::endl;
+        std::cout << "Stack : " << stack << std::endl;
+        std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
+    };
 
-		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
-		KindsOfAction action;
-		float bet_amount = 0;
+	Action get_action(float min_total_bet) {
+		show_player_info();
+
+		// std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
+		// KindsOfAction action;
+		float bet_delta = min_total_bet - round_amount_bet;
 		
-		// if (actions_is_kind_of_bet(action)) {
-        //     // For testing purposes
-        //     bet_amount = 1;
-		// } else {
-		// 	bet_amount = 0;
-		// }
-		return std::make_tuple(KindsOfAction::CHECK, bet_amount);
-	} 
+		if (bet_delta > 0) {
+			// We haven't bet the minimum amount
+			return std::make_tuple(KindsOfAction::CALL, bet_delta);
+		} else if (bet_delta == 0) {
+			// We've already bet the minimum amount
+			return std::make_tuple(KindsOfAction::CHECK, 0);
+		} else {
+			// We can't bet the minimum amount.
+			return std::make_tuple(KindsOfAction::FOLD, 0);
+		}
+ 	} 
 	
 	float get_bet_amount(float current_min_bet) {
 		return current_min_bet;

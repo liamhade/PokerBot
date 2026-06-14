@@ -4,6 +4,8 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <thread>
+#include <chrono>
 #include <random>
 #include "../include/HandEvaluator.h"
 #include "../include/CardHandler.h"
@@ -159,8 +161,10 @@ void Poker::betting_round() {
                 cout << "Skipping " << p->get_name() << " because they have no money." << endl << endl;
             } else {
                 Action player_action = p->get_action(minimum_bet);
+                show_action(player_action);
                 update_game_using_player_action(p, player_action, &minimum_bet);
             }
+            this_thread::sleep_for(chrono::milliseconds(1000));
         };
         all_players_have_gone = true;
     }
