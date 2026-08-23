@@ -21,7 +21,7 @@ int main() {
     Human p1(100, "Kenny Rogers");
     Bot p2(100, "James Dean");
 
-    Poker game({ &p1, &p2 }, deck);
+    Poker game({ &p1, &p2 }, deck, 0.5, 1);
     game.play();
 
     return 0;

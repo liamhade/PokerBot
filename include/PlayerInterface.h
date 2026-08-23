@@ -3,6 +3,7 @@
 
 #include <tuple>
 #include <vector>
+#include <algorithm>
 #include "CardHandler.h"
 #include "Action.h"
 
@@ -135,6 +136,16 @@ public:
 		}
 	}
 
+    void bet(float amount) {
+        /* 
+        Bets a certain amount for the player, 
+        not allowing them to bet more than their stack.
+        */
+        float adjusted_amount = std::min(amount, stack);
+        add_to_amount_bet(adjusted_amount);
+		remove_from_stack(adjusted_amount);
+    }
+
    	float handle_betting(KindsOfAction action, float min_total_bet) {
 		float bet_amount = 0;
 
@@ -146,8 +157,7 @@ public:
 			bet_amount = get_bet_amount(min_total_bet);
 		}
 		
-		add_to_amount_bet(bet_amount);
-		remove_from_stack(bet_amount);
+        bet(bet_amount);
 		return bet_amount;
 	}
 };

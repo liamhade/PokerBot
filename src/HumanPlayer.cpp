@@ -7,7 +7,7 @@ public:
 	Human(float s, std::string n) : Player(s, n) {}
 
 	void show_player_info() {
-        std::cout << "USER  : " << "\033[1m" << name << "\033[0m" << std::endl;
+        // std::cout << "USER  : " << "\033[1m" << name << "\033[0m" << std::endl;
         std::cout << "Stack : " << stack << std::endl;
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };

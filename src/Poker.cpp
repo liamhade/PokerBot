@@ -7,12 +7,15 @@
 #include <thread>
 #include <chrono>
 #include <random>
+#include <typeinfo>
 #include "../include/HandEvaluator.h"
 #include "../include/CardHandler.h"
 #include "../include/DeckHandler.h"
 #include "../include/PotDispersal.h"
 #include "../include/PlayerInterface.h"
 #include "../include/Poker.h"
+#include "./ComputerPlayer.cpp"
+#include "./HumanPlayer.cpp"
 using namespace std;
 
 /*
@@ -20,12 +23,23 @@ Thank you to paparazzo from https://softwareengineering.stackexchange.com/questi
 for helping me to realize that my side pop implementation was over-complicated.
 */
 
-Poker::Poker(vector<Player*> players, DeckHandler deck) {
-    this->players = players;
-    this->deck    = deck;
+Poker::Poker(vector<Player*> players, DeckHandler deck, float sb_amount, float bb_amount) {
+    this->players   = players;
+    this->deck      = deck;
+    this->sb_amount = sb_amount;
+    this->bb_amount = bb_amount; 
+}
+
+void Poker::set_initial_button_indices(){
+    dealer_index = 0;
+    sb_index     = 1;
+    // In case there are only two players
+    bb_index     = 2 % players.size();
 }
 
 void Poker::play() {
+    set_initial_button_indices();
+
     while (1) {
         community_cards = {};
         pot = 0;
@@ -33,6 +47,7 @@ void Poker::play() {
         reset_player_fold_states();
         reset_player_bet_amounts_for_round();
         reset_player_total_bet_amounts();
+        blinds_bet();
 
         deal_player_cards();
         show_header("PRE-FLOP");
@@ -65,6 +80,7 @@ void Poker::play() {
         show_community_cards();
         betting_round();
         disperse_winnings(true);
+        rotate_buttons();
     }
 }
 
@@ -143,6 +159,54 @@ void Poker::deal_player_cards() {
     }
 }
 
+Player* Poker::get_dealer() {
+    return players[dealer_index];
+}
+
+Player* Poker::get_small_blind() {
+    return players[sb_index];
+}
+
+Player* Poker::get_big_blind() {
+    return players[bb_index];
+}
+
+void Poker::blinds_bet() {
+    get_small_blind()->bet(sb_amount);
+    get_big_blind()->bet(bb_amount);
+}
+
+int Poker::_rotated_button_index(int button_index) {
+    return (button_index + 1) % players.size();
+}
+
+void Poker::rotate_buttons() {
+    dealer_index = _rotated_button_index(dealer_index);
+    sb_index = _rotated_button_index(sb_index);
+    bb_index = _rotated_button_index(bb_index);
+}
+
+string Poker::get_player_header(Player* player) {
+    string header;
+    if (typeid(*player) == typeid(Bot)) {
+        header = player->name + " (bot)";
+    } else if (typeid(*player) == typeid(Human)) {
+        header = player->name + " (human)";
+    }
+
+    if (get_dealer() == player) {
+        header = "[D] " + header;
+    }
+     if (get_small_blind() == player) {
+        header = "[SB] " + header;
+    }
+    if (get_big_blind() == player) {
+        header = "[BB] " + header;
+    }
+
+    return header;
+}
+
 void Poker::betting_round() {
     float minimum_bet = 0.0;
     bool all_players_have_gone = false;
@@ -160,6 +224,7 @@ void Poker::betting_round() {
             } else if (p->has_no_money()) {
                 cout << "Skipping " << p->get_name() << " because they have no money." << endl << endl;
             } else {
+                cout << get_player_header(p) << endl;
                 Action player_action = p->get_action(minimum_bet);
                 show_action(player_action);
                 update_game_using_player_action(p, player_action, &minimum_bet);

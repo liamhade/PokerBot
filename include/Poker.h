@@ -21,7 +21,7 @@ for helping me to realize that my side pop implementation was over-complicated.
 
 class Poker {
 public:
-    Poker(vector<Player*> players, DeckHandler deck);
+    Poker(vector<Player*> players, DeckHandler deck, float sb_amount, float bb_amount);
     
     void play();
 
@@ -30,6 +30,20 @@ public:
     void show_header(string text);
 
     void reset_player_fold_states();
+
+    Player* get_dealer();
+
+    Player* get_small_blind();
+
+    Player* get_big_blind();
+
+    void blinds_bet();
+
+    int _rotated_button_index(int button_index);
+
+    void rotate_buttons();
+
+    string get_player_header(Player* player);
 
     vector<vector<tuple<Player*, Cards, HandRank>>> sorted_non_folded_players();
 
@@ -53,13 +67,22 @@ public:
 
     void update_game_using_player_action(Player* player, Action player_action, float* minimum_bet);
 
-private:
+private:    
     vector<Player*> players;
     DeckHandler deck;
+    float sb_amount;
+    float bb_amount;
     float pot = 0.0;
     Cards community_cards;
 
+    // Initial values
+    int dealer_index = -1;
+    int sb_index     = -1;
+    int bb_index     = -1;
+
     vector<KindsOfAction> get_possible_actions(Action last_action);
+
+    void set_initial_button_indices();
 };
 
 #endif

@@ -8,9 +8,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\*.cpp",
+                "${workspaceFolder}\\src\\*.cpp",
                 "-o",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\bin\\${fileBasenameNoExtension}.exe"
+                "${workspaceFolder}\\bin\\main.exe"
             ],
             "problemMatcher": [
                 "$gcc"
@@ -28,14 +28,14 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\CardHandler.cpp",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\DeckHandler.cpp",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\HandEvaluator.cpp",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\PotDispersal.cpp",
-                "C:\\Users\\11061985\\OneDrive - Dover Corporation\\Desktop\\PROJECTS\\PokerBot\\src\\Player.cpp",
-                "${fileDirname}\\${fileBasenameNoExtension}.cpp",
+                "${workspaceFolder}\\src\\CardHandler.cpp",
+                "${workspaceFolder}\\src\\DeckHandler.cpp",
+                "${workspaceFolder}\\src\\HandEvaluator.cpp",
+                "${workspaceFolder}\\src\\PotDispersal.cpp",
+                "${workspaceFolder}\\src\\Player.cpp",
+                "${fileDirname}\\main.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\main.exe"
             ],
             "problemMatcher": [
                 "$gcc"
