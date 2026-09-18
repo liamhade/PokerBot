@@ -12,12 +12,12 @@ public:
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };
 
-	Action get_action(float min_total_bet) {
+	Action decide_action(float min_bet, float largest_bet_this_round) {
 		show_player_info();
 
 		// std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
 		// KindsOfAction action;
-		float bet_delta = min_total_bet - round_amount_bet;
+		float bet_delta = largest_bet_this_round - round_amount_bet;
 		
 		if (bet_delta > 0) {
 			// We haven't bet the minimum amount

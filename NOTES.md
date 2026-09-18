@@ -1,3 +1,17 @@
+# 9/8/26
+
+PROBLEM: The betting design for the player is overly complicated. I'll probably need to go in their and fine-tune some of the abstractions.
+
+PROBLEM: The minimum bet for the round isn't being reset. It keep's defaulting to the `big bling`.
+SOLUTION: That's because I set it that way. I conflated the minimum amount to bet with the big blind amount.
+
+PROBLEM: For some reason, when I play against the bot, I'm getting stuck in an infinite loop on the preflop.
+- Does it happen when it's human vs human?
+    + No, it only happens when it's human vs bot. Which implies that this is an issue with the Bot implementation.
+- SOLUTION: The problem was that `ComputerPlayer` wasn't updating it's `round_amount_bet` and `total_amount_bet` values like it should have been. That functionality should be taken factored out so that that logic is applied, regardless of the `Player` implementation.
+
+Just learned about `GoogleTest`, Google's C++ testing framework. I should migrate over to that when I get the chance.
+
 # 4/26/26
 
 I got the Bot player to respond to user bets with calls. However, we're having some issues with the bets not registering, so I'll need to fix that in the next iteration. I also adjusted some of the formatting for the outputs to make them more aesthetic and easier to look at.

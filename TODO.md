@@ -1,6 +1,14 @@
+## Testing
+
+- [ ] (**Migrate tests to GoogleTest**)
+
 ## Game Mechanics 
 
-- [ ] (**Design + Implement SB and LB**) Design archicture for + add Small Blind and Little Blind into the game mechanics. Make sure that `SB` and `LB` are written next to the names of the players who have those chips. 
+- [~] (**Design + Implement SB and LB**) Design archicture for + add Small Blind and Little Blind into the game mechanics. Make sure that `SB` and `LB` are written next to the names of the players who have those chips. 
+
+- [ ] (**Fixed bet increments**) Users shouldn't be able to bet any increment above the minimum bet.
+
+- [ ] (**Add `$` to the amounts**)
 
 - [ ] (**option to buy back / quit if no more money**) If a player has no more money, the game shouldn't continue as usual. We should give the option for them to buy back in for more.
 

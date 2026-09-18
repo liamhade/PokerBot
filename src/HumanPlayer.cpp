@@ -12,15 +12,15 @@ public:
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };
 
-	Action get_action(float min_total_bet) {
-		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
+	Action decide_action(float min_bet, float largest_bet_this_round) {
 		KindsOfAction user_action;
 		float bet_amount;
+		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(largest_bet_this_round);
 		
-		prompt_user_with_options(possible_actions,  min_total_bet);
+		prompt_user_with_options(possible_actions,  largest_bet_this_round);
 		user_action = get_user_action_type(possible_actions);    
 		if (actions_is_kind_of_bet(user_action)) {
-			bet_amount = handle_betting(user_action, min_total_bet);
+			bet_amount = handle_betting(user_action, min_bet, largest_bet_this_round);
 		} else {
 			bet_amount = 0;
 		}
@@ -28,19 +28,17 @@ public:
 		return std::make_tuple(user_action, bet_amount);
 	} 
 
-	float handle_betting(KindsOfAction user_action, float min_total_bet) {
+	float handle_betting(KindsOfAction user_action, float min_bet, float largest_bet_this_round) {
 		float bet_amount = 0;
 
 		if (user_action == KindsOfAction::CALL) {
-			bet_amount = handle_call(min_total_bet); 
+			bet_amount = handle_call(largest_bet_this_round); 
 		} else if (user_action == KindsOfAction::ALL_IN) {
 			bet_amount = stack;
 		} else {
-			bet_amount = get_bet_amount(min_total_bet);
+			bet_amount = get_bet_amount(largest_bet_this_round);
 		}
 		
-		add_to_amount_bet(bet_amount);
-		remove_from_stack(bet_amount);
 		return bet_amount;
 	}
 

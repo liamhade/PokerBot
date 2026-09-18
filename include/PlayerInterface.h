@@ -4,6 +4,7 @@
 #include <tuple>
 #include <vector>
 #include <algorithm>
+#include <stdexcept>
 #include "CardHandler.h"
 #include "Action.h"
 
@@ -23,13 +24,14 @@ public:
 
     virtual void show_player_info() = 0;
 
-    std::vector<KindsOfAction> get_possible_actions_for_player(float minimum_bet) {
-        if (get_round_amount_bet() == minimum_bet) {
+    std::vector<KindsOfAction> get_possible_actions_for_player(float largest_bet_this_round) {
+        /* Returns the legal kinds of actions that a play can take this turn. */
+        if (get_round_amount_bet() == largest_bet_this_round) {
             // No bets to meet
             return { KindsOfAction::CHECK, KindsOfAction::BET, KindsOfAction::ALL_IN, KindsOfAction::FOLD };
-        } else if (get_round_amount_bet() < minimum_bet) {
+        } else if (get_round_amount_bet() < largest_bet_this_round) {
             // Player needs to atleast match the minimum bet, or fold.
-            float bet_delta = minimum_bet - get_round_amount_bet();
+            float bet_delta = largest_bet_this_round - get_round_amount_bet();
             if (stack > bet_delta) {
                 return { KindsOfAction::CALL, KindsOfAction::RAISE, KindsOfAction::ALL_IN, KindsOfAction::FOLD };
             } else {
@@ -37,12 +39,23 @@ public:
             }
         } else {
             // Should never happen
-            throw 400;
+            throw std::invalid_argument("Player has bet more than the largest_bet_this_round.");
         }
     }
 
     // Must be defined by the child class.
-    virtual Action get_action(float current_min_bet) = 0;
+    virtual Action decide_action(float min_bet, float largest_bet_this_round) = 0;
+
+    void apply_action(Action action) {
+        add_to_amount_bet(std::get<1>(action));
+		remove_from_stack(std::get<1>(action));
+    }
+
+    Action act(float min_bet, float largest_bet_this_round) {
+        Action action = decide_action(min_bet, largest_bet_this_round);
+		apply_action(action);
+        return action;
+    }
 
     void set_cards(Cards cards) {
         pocket = cards;

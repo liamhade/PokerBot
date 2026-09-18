@@ -45,13 +45,12 @@ void Poker::play() {
         pot = 0;
         deck.reset();
         reset_player_fold_states();
-        reset_player_bet_amounts_for_round();
         reset_player_total_bet_amounts();
-        blinds_bet();
-
-        deal_player_cards();
+        
         show_header("PRE-FLOP");
-        betting_round();
+        deal_player_cards();
+        reset_player_bet_amounts_for_round();
+        betting_round(true);
         if (all_but_one_folded()) {
             disperse_winnings(false);
             continue;
@@ -60,6 +59,7 @@ void Poker::play() {
         show_header("FLOP");
         add_community_cards(3);
         show_community_cards();
+        reset_player_bet_amounts_for_round();
         betting_round();
         if (all_but_one_folded()) {
             disperse_winnings(false);
@@ -69,6 +69,7 @@ void Poker::play() {
         show_header("TURN");
         add_community_cards(1);
         show_community_cards();
+        reset_player_bet_amounts_for_round();
         betting_round();
         if (all_but_one_folded()) {
             disperse_winnings(false);
@@ -78,7 +79,9 @@ void Poker::play() {
         show_header("RIVER");
         add_community_cards(1);
         show_community_cards();
+        reset_player_bet_amounts_for_round();
         betting_round();
+
         disperse_winnings(true);
         rotate_buttons();
     }
@@ -171,11 +174,6 @@ Player* Poker::get_big_blind() {
     return players[bb_index];
 }
 
-void Poker::blinds_bet() {
-    get_small_blind()->bet(sb_amount);
-    get_big_blind()->bet(bb_amount);
-}
-
 int Poker::_rotated_button_index(int button_index) {
     return (button_index + 1) % players.size();
 }
@@ -207,13 +205,21 @@ string Poker::get_player_header(Player* player) {
     return header;
 }
 
-void Poker::betting_round() {
-    float minimum_bet = 0.0;
+void Poker::betting_round(bool is_preflop) {
+    float minimum_bet = bb_amount;
     bool all_players_have_gone = false;
-    reset_player_bet_amounts_for_round();
+    float largest_bet_this_round;
+
+    if (is_preflop) {
+        get_small_blind()->bet(sb_amount);
+        get_big_blind()->bet(bb_amount);
+        largest_bet_this_round = bb_amount;
+    } else {
+        largest_bet_this_round = 0;
+    }
 
     while (1) {
-        if ((all_players_have_gone && round_is_over(minimum_bet))) {
+        if ((all_players_have_gone && round_is_over(largest_bet_this_round))) {
             return;
         }
         for (Player* p : players)  {
@@ -225,9 +231,9 @@ void Poker::betting_round() {
                 cout << "Skipping " << p->get_name() << " because they have no money." << endl << endl;
             } else {
                 cout << get_player_header(p) << endl;
-                Action player_action = p->get_action(minimum_bet);
+                Action player_action = p->act(minimum_bet, largest_bet_this_round);
                 show_action(player_action);
-                update_game_using_player_action(p, player_action, &minimum_bet);
+                update_game_using_player_action(p, player_action, &largest_bet_this_round);
             }
             this_thread::sleep_for(chrono::milliseconds(1000));
         };
@@ -269,7 +275,7 @@ bool Poker::all_but_one_folded() {
     return (fold_count == players.size()-1);
 }
 
-void Poker::update_game_using_player_action(Player* player, Action player_action, float* minimum_bet) {
+void Poker::update_game_using_player_action(Player* player, Action player_action, float* largest_bet_this_round) {
     switch (get<0>(player_action)) {
         case KindsOfAction::CHECK:
             return;
@@ -282,8 +288,8 @@ void Poker::update_game_using_player_action(Player* player, Action player_action
         case KindsOfAction::ALL_IN:
             pot += get<1>(player_action);
 
-            if (*minimum_bet < player->get_round_amount_bet()) {
-                *minimum_bet = player->get_round_amount_bet();
+            if (*largest_bet_this_round < player->get_round_amount_bet()) {
+                *largest_bet_this_round = player->get_round_amount_bet();
             }
     };
 }

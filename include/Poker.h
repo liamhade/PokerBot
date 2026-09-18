@@ -37,11 +37,7 @@ public:
 
     Player* get_big_blind();
 
-    void blinds_bet();
-
     int _rotated_button_index(int button_index);
-
-    void rotate_buttons();
 
     string get_player_header(Player* player);
 
@@ -55,7 +51,7 @@ public:
 
     void deal_player_cards();
 
-    void betting_round();
+    void betting_round(bool is_preflop = false);
     
     void reset_player_total_bet_amounts(); 
 
@@ -66,6 +62,8 @@ public:
     bool all_but_one_folded();
 
     void update_game_using_player_action(Player* player, Action player_action, float* minimum_bet);
+
+    void rotate_buttons();
 
 private:    
     vector<Player*> players;
