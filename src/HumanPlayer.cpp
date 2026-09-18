@@ -82,8 +82,7 @@ public:
 		} else {
 			float user_bet;
 			while (1) {
-				std::cout << "How much would you like to bet ";
-				std::cout << "(must be at least $" << bet_needed_to_stay_in_game << "): ";
+				std::cout << "How much would you like to bet: ";
 				std::cin >> user_bet;
 				
 				if (user_bet < bet_needed_to_stay_in_game) {
