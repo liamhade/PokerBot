@@ -12,15 +12,15 @@ public:
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };
 
-	Action decide_action(float min_bet, float largest_bet_this_round) {
+	Action decide_action(float big_blind, float current_bet) {
 		KindsOfAction user_action;
 		float bet_amount;
-		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(largest_bet_this_round);
+		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(current_bet);
 		
-		prompt_user_with_options(possible_actions,  largest_bet_this_round);
+		prompt_user_with_options(possible_actions,  current_bet);
 		user_action = get_user_action_type(possible_actions);    
 		if (actions_is_kind_of_bet(user_action)) {
-			bet_amount = handle_betting(user_action, min_bet, largest_bet_this_round);
+			bet_amount = handle_betting(user_action, big_blind, current_bet);
 		} else {
 			bet_amount = 0;
 		}
@@ -28,15 +28,18 @@ public:
 		return std::make_tuple(user_action, bet_amount);
 	} 
 
-	float handle_betting(KindsOfAction user_action, float min_bet, float largest_bet_this_round) {
+	float handle_betting(KindsOfAction user_action, float big_blind, float current_bet) {
+		/*
+		Helper function for when the user wants to bet.
+		*/
 		float bet_amount = 0;
 
 		if (user_action == KindsOfAction::CALL) {
-			bet_amount = handle_call(largest_bet_this_round); 
+			bet_amount = handle_call(current_bet); 
 		} else if (user_action == KindsOfAction::ALL_IN) {
 			bet_amount = stack;
 		} else {
-			bet_amount = get_bet_amount(largest_bet_this_round);
+			bet_amount = get_bet_amount(big_blind, current_bet);
 		}
 		
 		return bet_amount;
@@ -66,26 +69,27 @@ public:
 		return possible_actions[user_action_num];
 	}
 
-	float get_bet_amount(float current_min_bet) {
-		float players_min_bet = current_min_bet - round_amount_bet;
+	float get_bet_amount(float big_blind, float current_bet) {
+		/* 
+		Assumes that a player wants to bet, and retrieves that amount. 
+		*/
+		float bet_needed_to_stay_in_game = current_bet - round_amount_bet;
 
-		if (players_min_bet >= stack) {
-			// If the current minimum bet is >= players stack, then we just
-			// make the bet everything the player has
-			std::cout << "\tMinimum bet is $" << players_min_bet << ", but player only has $" << stack << std::endl;
+		if (bet_needed_to_stay_in_game >= stack) {
+			std::cout << "\tMinimum bet is $" << bet_needed_to_stay_in_game << ", but player only has $" << stack << std::endl;
 			std::cout << "\tBetting players entire stack..." << std::endl;
 			return stack;
 		} else {
-			// The player has more money in their stack the current minimum bet
 			float user_bet;
 			while (1) {
 				std::cout << "How much would you like to bet ";
-				std::cout << "(must be at least $" << players_min_bet << "): ";
+				std::cout << "(must be at least $" << bet_needed_to_stay_in_game << "): ";
 				std::cin >> user_bet;
 				
-				if (user_bet < players_min_bet) {
-					std::cout << "\tPlayer must bet at least $" << players_min_bet << "..." << std::endl; 
-					continue;
+				if (user_bet < bet_needed_to_stay_in_game) {
+					std::cout << "\tPlayer must bet at least $" << bet_needed_to_stay_in_game << "..." << std::endl; 
+				} else if ((bet_needed_to_stay_in_game == 0) && (user_bet < big_blind)) {
+					std::cout << "\tPlayer must bet at least the big blind ($" << big_blind << ")..." << std::endl; 
 				} else {
 					break;
 				}

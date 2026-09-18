@@ -44,15 +44,15 @@ public:
     }
 
     // Must be defined by the child class.
-    virtual Action decide_action(float min_bet, float largest_bet_this_round) = 0;
+    virtual Action decide_action(float big_blind, float current_bet) = 0;
 
     void apply_action(Action action) {
         add_to_amount_bet(std::get<1>(action));
 		remove_from_stack(std::get<1>(action));
     }
 
-    Action act(float min_bet, float largest_bet_this_round) {
-        Action action = decide_action(min_bet, largest_bet_this_round);
+    Action act(float min_bet, float current_bet) {
+        Action action = decide_action(min_bet, current_bet);
 		apply_action(action);
         return action;
     }
@@ -137,8 +137,6 @@ public:
 		};
     }
 
-    float virtual get_bet_amount(float min_total_bet) = 0;
-
     float handle_call(float call_amount) {
 		float amount_to_bet = call_amount - round_amount_bet;
 		if (amount_to_bet >= stack) {
@@ -158,21 +156,6 @@ public:
         add_to_amount_bet(adjusted_amount);
 		remove_from_stack(adjusted_amount);
     }
-
-   	float handle_betting(KindsOfAction action, float min_total_bet) {
-		float bet_amount = 0;
-
-		if (action == KindsOfAction::CALL) {
-			bet_amount = handle_call(min_total_bet); 
-		} else if (action == KindsOfAction::ALL_IN) {
-			bet_amount = stack;
-		} else {
-			bet_amount = get_bet_amount(min_total_bet);
-		}
-		
-        bet(bet_amount);
-		return bet_amount;
-	}
 };
 
 #endif

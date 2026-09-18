@@ -13,8 +13,8 @@ Implement the mechanics of the small blind, little blind, and dealer buttons
 5. [x] The D, SB, and BB chips must rotate clockwise after each hand
 6. [x] A (SB), (BB), or (D) icon must appear in bold next to the name of the player 
 7. [x] Minimum bet must reflect the BB and SB values
-8. [ ] On pre-flop, the BB doesn't have to bet again.
-8. [ ] On pre-flop, the SB has to bet again.
+8. [x] On pre-flop, the BB doesn't have to bet again.
+8. [x] On pre-flop, the SB has to bet again.
 
 # Edge-cases
 
