@@ -51,8 +51,8 @@ public:
 		remove_from_stack(std::get<1>(action));
     }
 
-    Action act(float min_bet, float current_bet) {
-        Action action = decide_action(min_bet, current_bet);
+    Action act(float big_blind, float current_bet) {
+        Action action = decide_action(big_blind, current_bet);
 		apply_action(action);
         return action;
     }

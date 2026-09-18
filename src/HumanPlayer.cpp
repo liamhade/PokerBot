@@ -1,5 +1,6 @@
 #include "../include/PlayerInterface.h"
 #include <iostream>
+#include <algorithm>
 
 
 class Human : public Player {
@@ -20,7 +21,7 @@ public:
 		prompt_user_with_options(possible_actions,  current_bet);
 		user_action = get_user_action_type(possible_actions);    
 		if (actions_is_kind_of_bet(user_action)) {
-			bet_amount = handle_betting(user_action, big_blind, current_bet);
+			bet_amount = handle_bet_action(user_action, big_blind, current_bet);
 		} else {
 			bet_amount = 0;
 		}
@@ -28,7 +29,7 @@ public:
 		return std::make_tuple(user_action, bet_amount);
 	} 
 
-	float handle_betting(KindsOfAction user_action, float big_blind, float current_bet) {
+	float handle_bet_action(KindsOfAction user_action, float big_blind, float current_bet) {
 		/*
 		Helper function for when the user wants to bet.
 		*/
@@ -81,19 +82,16 @@ public:
 			return stack;
 		} else {
 			float user_bet;
+			float min_bet = std::min({bet_needed_to_stay_in_game, big_blind});
 			while (1) {
 				std::cout << "How much would you like to bet: ";
 				std::cin >> user_bet;
-				
-				if (user_bet < bet_needed_to_stay_in_game) {
-					std::cout << "\tPlayer must bet at least $" << bet_needed_to_stay_in_game << "..." << std::endl; 
-				} else if ((bet_needed_to_stay_in_game == 0) && (user_bet < big_blind)) {
-					std::cout << "\tPlayer must bet at least the big blind ($" << big_blind << ")..." << std::endl; 
-				} else {
-					break;
+				if (user_bet < min_bet) {
+					std::cout << "\tIllegal move: must bet at least $" << min_bet << "..." << std::endl; 
+					continue;
 				}
+				return user_bet;
 			}
-			return user_bet;
 		}
 	}
 
