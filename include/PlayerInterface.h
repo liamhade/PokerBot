@@ -46,14 +46,18 @@ public:
     // Must be defined by the child class.
     virtual Action decide_action(float big_blind, float current_bet) = 0;
 
-    void apply_action(Action action) {
+    void apply_action_to_player_state(Action action) {
+        if (std::get<0>(action) == KindsOfAction::FOLD) {
+            has_folded = true;
+            return;
+        }
         add_to_amount_bet(std::get<1>(action));
 		remove_from_stack(std::get<1>(action));
     }
 
     Action act(float big_blind, float current_bet) {
         Action action = decide_action(big_blind, current_bet);
-		apply_action(action);
+		apply_action_to_player_state(action);
         return action;
     }
 

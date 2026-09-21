@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\CardHandler.h"
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\Player.h"
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\PotDispersal.h"
+#include "..\src\CardHandler.h"
+#include "..\src\Player.h"
+#include "..\src\PotDispersal.h"
 
 template<typename T>
 void assert(T actual, T expected, string test_name) {

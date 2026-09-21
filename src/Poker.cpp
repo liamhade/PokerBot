@@ -39,8 +39,16 @@ void Poker::set_initial_button_indices(){
 
 void Poker::play() {
     set_initial_button_indices();
+    bool is_first_round = true;
 
     while (1) {
+
+        if (!is_first_round) {
+            rotate_buttons();
+        } else {
+            is_first_round = false;
+        }
+
         community_cards = {};
         pot = 0;
         deck.reset();
@@ -83,18 +91,17 @@ void Poker::play() {
         betting_round();
 
         disperse_winnings(true);
-        rotate_buttons();
     }
 }
 
 void Poker::show_header(string text) {
-    cout << "############" << endl;
-    cout << "## " << text << endl;
-    cout << "############\n" << endl;
+    cout << "############\n";
+    cout << "## " << text << "\n";
+    cout << "############\n";
 }
 
 void Poker::show_community_cards() {
-    cout << "Community Cards: " << get_cards_str(community_cards) << endl;
+    cout << "Community Cards: " << get_cards_str(community_cards) << "\n";
 }
 
 
@@ -121,9 +128,9 @@ void Poker::disperse_winnings(bool show_hand_details) {
             // Grabbing only player who hasn't folded.
             if (!player->has_player_folded()) {
                 player->add_to_stack(pot);
-                cout << player->get_name() << " won $" << pot << " because they were the only one not to fold." << endl;
+                cout << player->get_name() << " won $" << pot << " because they were the only one not to fold.\n" << endl;
                 pot = 0;
-                return;
+                break;
             }
         }
     } else {
@@ -132,12 +139,13 @@ void Poker::disperse_winnings(bool show_hand_details) {
         for (Player* player: players) {
             player_pointers.push_back(player);
         }
-
         // More than one non-folding players, which means we reached the river card.
         vector<vector<PlayerWithHandRank>> ranked_non_folded_players = sorted_non_folded_players();
         vector<SidePot> sidepots = create_sidepots(player_pointers);
         disperse_sidepot_funds_to_winners(ranked_non_folded_players, sidepots, true);
     }
+    // Delay for aesthetic affects.
+    this_thread::sleep_for(chrono::milliseconds(1000));
 }
 
 void Poker::add_community_cards(int n) {
@@ -205,39 +213,64 @@ string Poker::get_player_header(Player* player) {
     return header;
 }
 
+bool are_all_other_players_folded(vector<Player*> all_players, Player* player) {
+    int num_folded = 0;
+    for (Player* p : all_players) {
+        if (p->has_folded) {
+            num_folded++;
+        }
+    }
+    return (num_folded == (all_players.size()-1)) && (!player->has_folded);
+}
+
+void Poker::blinds_bet() {
+    get_small_blind()->bet(sb_amount);
+    cout << get_small_blind()->get_name() << " bet $" << sb_amount << " for the small blind.\n"; 
+    pot += sb_amount;
+    this_thread::sleep_for(chrono::milliseconds(500));
+    
+    get_big_blind()->bet(bb_amount);
+    cout << get_big_blind()->get_name() << " bet $" << bb_amount << " for the big blind.\n\n"; 
+    pot += bb_amount;
+    this_thread::sleep_for(chrono::milliseconds(500));
+}
+
 void Poker::betting_round(bool is_preflop) {
-    float minimum_bet = bb_amount;
     bool all_players_have_gone = false;
-    float largest_bet_this_round;
+    float current_bet;
 
     if (is_preflop) {
-        get_small_blind()->bet(sb_amount);
-        get_big_blind()->bet(bb_amount);
-        largest_bet_this_round = bb_amount;
+        blinds_bet();
+        current_bet = bb_amount;
     } else {
-        largest_bet_this_round = 0;
+        current_bet = 0;
     }
 
     while (1) {
-        if ((all_players_have_gone && round_is_over(largest_bet_this_round))) {
+        if ((all_players_have_gone && round_is_over(current_bet))) {
             return;
         }
         for (Player* p : players)  {
             if (p->has_player_folded()) {
-                cout << "Skipping " << p->get_name() << " because they folded." << endl << endl;
+                cout << "Skipping " << p->get_name() << " because they folded.\n\n";
             } else if (p->is_all_in()) {
-                cout << "Skipping " << p->get_name() << " because they are all in." << endl << endl;
+                cout << "Skipping " << p->get_name() << " because they are all in.\n\n";
             } else if (p->has_no_money()) {
-                cout << "Skipping " << p->get_name() << " because they have no money." << endl << endl;
+                cout << "Skipping " << p->get_name() << " because they have no money.\n\n";
+            } else if (are_all_other_players_folded(players, p)) {
+                cout << "All players except " << p->get_name() << " have folded.\n\n";
+                return;
             } else {
-                cout << get_player_header(p) << endl;
-                Action player_action = p->act(minimum_bet, largest_bet_this_round);
+                cout << get_player_header(p) << "\n";
+
+                Action player_action = p->act(bb_amount, current_bet);
                 show_action(player_action);
-                update_game_using_player_action(p, player_action, &largest_bet_this_round);
+
+                pot += get<1>(player_action);
+                current_bet = max({ current_bet, p->get_round_amount_bet() });
             }
             this_thread::sleep_for(chrono::milliseconds(1000));
-        };
-        all_players_have_gone = true;
+        }
     }
 }
     
@@ -274,26 +307,6 @@ bool Poker::all_but_one_folded() {
     }
     return (fold_count == players.size()-1);
 }
-
-void Poker::update_game_using_player_action(Player* player, Action player_action, float* largest_bet_this_round) {
-    switch (get<0>(player_action)) {
-        case KindsOfAction::CHECK:
-            return;
-        case KindsOfAction::FOLD:
-            player->set_player_has_folded();
-            return;
-        case KindsOfAction::BET:
-        case KindsOfAction::CALL:
-        case KindsOfAction::RAISE:
-        case KindsOfAction::ALL_IN:
-            pot += get<1>(player_action);
-
-            if (*largest_bet_this_round < player->get_round_amount_bet()) {
-                *largest_bet_this_round = player->get_round_amount_bet();
-            }
-    };
-}
-
 
 vector<KindsOfAction> Poker::get_possible_actions(Action last_action) {
     KindsOfAction last_kind_of_action = get<0>(last_action);

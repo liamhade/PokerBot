@@ -51,6 +51,8 @@ public:
 
     void deal_player_cards();
 
+    void blinds_bet();
+
     void betting_round(bool is_preflop = false);
     
     void reset_player_total_bet_amounts(); 

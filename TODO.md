@@ -1,16 +1,25 @@
 ## Testing
 
+- [ ] (**Ensure testing suite runs**)
+
+- [ ] (**Add in tests cases for edge-cases**)
+	- [ ] Player runs out of money --> game should end. 
+
 - [ ] (**Migrate tests to GoogleTest**)
 
-## Game Mechanics 
-
-- [~] (**Design + Implement SB and LB**) Design archicture for + add Small Blind and Little Blind into the game mechanics. Make sure that `SB` and `LB` are written next to the names of the players who have those chips. 
-
-- [ ] (**Fixed bet increments**) Users shouldn't be able to bet any increment above the minimum bet.
+## Design
 
 - [ ] (**Add `$` to the amounts**)
 
-- [ ] (**option to buy back / quit if no more money**) If a player has no more money, the game shouldn't continue as usual. We should give the option for them to buy back in for more.
+- [ ] (**ASCII art / better design for the cards**)
+
+- [ ] (**Add toggle to hide `Bot` cards**)
+
+- [ ] (**chip sounds**)  Add the sound of chips falling when a player bets. 
+
+## Game Mechanics 
+
+- [ ] (**game end when player runs out of money**)
 
 - [ ] (**add/remove players**) A player should be able to leave / join the game any time they want.
 
@@ -20,14 +29,6 @@
 	- `Poker.h`: 
 		- LN24 becomes `Poker(vector<Player*> players, DeckHandler deck, float ante);`
 		- Below LN60, add `float ante;`
-
-- [ ] (**Split get_action**) The `get_action` function as defined in `PlayerInterface.h` is too general. What we really need are two specialized `get_action` functions. One will be `Action get_bot_action(float min_bet, Cards table_cards, Players players)`, and the other will be `Action get_user_action(float min_bet)`.
-
-- [ ] (**Add minimum bet interval mechanics**) 
-	*Setup*       : Any game
-	*Action*      : Player bets by 0.00001
-	*Expectation* : Message stating: "I'm sorry you must bet atleast <the_minimum_bet>"
-	*Reality*	  : Bet is allowed.
 
 - [~] Add a simple poker engine to play against
 
@@ -56,5 +57,3 @@
 - [ ] (**folding mechanics**) End the betting round early depending on how players fold
 
 - [ ] (**card reveals**) Make sure that player's cards aren't revealed if they everyone else folded.
-
-- [ ] (**chip sounds**)  Add the sound of chips falling when a player bets. 

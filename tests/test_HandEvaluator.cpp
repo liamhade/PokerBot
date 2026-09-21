@@ -1,8 +1,10 @@
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\HandEvaluator.h"
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\CardHandler.h"
-#include "C:\Users\11061985\OneDrive - Dover Corporation\Desktop\PROJECTS\PokerBot\src\Player.h"
 #include <iostream>
 #include <stdio.h>
+
+#include "..\src\HandEvaluator.h"
+#include "..\src\CardHandler.h"
+#include "..\src\Player.h"
+
 using namespace std;
 
 // g++ -g "src/CardHandler.cpp" "src/HandEvaluator.cpp" "src/Player.cpp" "tests/test_HandEvaluator.cpp" -o "tests/test.exe"; tests/test.exe

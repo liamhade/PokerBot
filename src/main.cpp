@@ -20,7 +20,9 @@ int main() {
     DeckHandler deck;
     Human p1(100, "Kenny Rogers");
     Bot p2(100, "James Dean");
+    // Bot p3(100, "Merle Haggard");
 
+    // Poker game({ &p1, &p2, &p3 }, deck, 0.5, 1);
     Poker game({ &p1, &p2 }, deck, 0.5, 1);
     game.play();
 
