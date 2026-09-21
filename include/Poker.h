@@ -55,6 +55,8 @@ public:
 
     void blinds_bet();
 
+    bool is_only_player_who_can_bet(Player* player);
+
     float player_turn(Player* player, float current_bet);
 
     void betting_round(bool is_preflop = false);

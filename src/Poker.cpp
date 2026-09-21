@@ -247,6 +247,20 @@ void Poker::blinds_bet() {
     this_thread::sleep_for(chrono::milliseconds(500));
 }
 
+bool Poker::is_only_player_who_can_bet(Player* player) {
+    bool player_can_bet = false;
+    for (Player* p : players) {
+        if ((p->stack > 0) && (!p->has_folded)) {
+            if (p == player) {
+                player_can_bet = true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return player_can_bet;
+}
+
 float Poker::player_turn(Player* player, float current_bet) {
     cout << get_player_header(player) << "\n";
     Action player_action = player->act(bb_amount, current_bet);
@@ -278,6 +292,8 @@ void Poker::betting_round(bool is_preflop) {
             } else if (are_all_other_players_folded(players, p)) {
                 cout << "All players except " << p->get_name() << " have folded.\n\n";
                 return;
+            } else if (is_only_player_who_can_bet(p) && (current_bet == p->get_round_amount_bet())) {
+                cout << p->get_name() << " has no one to bet against.\n\n";
             } else {
               current_bet = player_turn(p, current_bet);
             }
