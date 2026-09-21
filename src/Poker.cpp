@@ -28,23 +28,21 @@ Poker::Poker(vector<Player*> players, DeckHandler deck, float sb_amount, float b
     this->deck      = deck;
     this->sb_amount = sb_amount;
     this->bb_amount = bb_amount; 
-}
 
-void Poker::set_initial_button_indices(){
-    dealer_index = 0;
-    sb_index     = 1;
-    // In case there are only two players
-    bb_index     = 2 % players.size();
+    this->dealer_index = 0;
+    this->sb_index     = 1;
+    this->bb_index     = 2 % players.size();
+    this->starting_player_index = 3 % players.size(); 
 }
 
 void Poker::play() {
-    set_initial_button_indices();
     bool is_first_round = true;
 
     while (1) {
 
         if (!is_first_round) {
             rotate_buttons();
+            ++starting_player_index %= players.size();  
         } else {
             is_first_round = false;
         }
@@ -97,11 +95,12 @@ void Poker::play() {
 void Poker::show_header(string text) {
     cout << "############\n";
     cout << "## " << text << "\n";
-    cout << "############\n";
+    cout << "############\n\n";
 }
 
 void Poker::show_community_cards() {
-    cout << "Community Cards: " << get_cards_str(community_cards) << "\n";
+    cout << "Community Cards: " << get_cards_str(community_cards) << "\n\n";
+    this_thread::sleep_for(chrono::milliseconds(1000));
 }
 
 
@@ -235,8 +234,15 @@ void Poker::blinds_bet() {
     this_thread::sleep_for(chrono::milliseconds(500));
 }
 
+float Poker::player_turn(Player* player, float current_bet) {
+    cout << get_player_header(player) << "\n";
+    Action player_action = player->act(bb_amount, current_bet);
+    show_action(player_action);
+    pot += get<1>(player_action);
+    return max({ current_bet, player->get_round_amount_bet() });
+}
+
 void Poker::betting_round(bool is_preflop) {
-    bool all_players_have_gone = false;
     float current_bet;
 
     if (is_preflop) {
@@ -246,11 +252,10 @@ void Poker::betting_round(bool is_preflop) {
         current_bet = 0;
     }
 
-    while (1) {
-        if ((all_players_have_gone && round_is_over(current_bet))) {
-            return;
-        }
-        for (Player* p : players)  {
+    do {
+        for (int i=0; i<players.size(); i++)  {
+            Player* p = players[(i+starting_player_index) % players.size()]; 
+
             if (p->has_player_folded()) {
                 cout << "Skipping " << p->get_name() << " because they folded.\n\n";
             } else if (p->is_all_in()) {
@@ -261,17 +266,11 @@ void Poker::betting_round(bool is_preflop) {
                 cout << "All players except " << p->get_name() << " have folded.\n\n";
                 return;
             } else {
-                cout << get_player_header(p) << "\n";
-
-                Action player_action = p->act(bb_amount, current_bet);
-                show_action(player_action);
-
-                pot += get<1>(player_action);
-                current_bet = max({ current_bet, p->get_round_amount_bet() });
+              current_bet = player_turn(p, current_bet);
             }
             this_thread::sleep_for(chrono::milliseconds(1000));
         }
-    }
+    } while (!round_is_over(current_bet));
 }
     
 void Poker::reset_player_total_bet_amounts() {
@@ -286,11 +285,11 @@ void Poker::reset_player_bet_amounts_for_round() {
     }
 }
 
-bool Poker::round_is_over(float min_bet) {
+bool Poker::round_is_over(float current_bet) {
     for (Player* p : players) {
         if (!(p->has_player_folded())) {
             // Only examining players who haven't folded.
-            if (!(p->is_all_in() || (p->get_round_amount_bet() == min_bet))) {
+            if (!(p->is_all_in() || (p->get_round_amount_bet() == current_bet))) {
                 return false;
             }
         }

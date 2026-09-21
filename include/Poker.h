@@ -53,13 +53,15 @@ public:
 
     void blinds_bet();
 
+    float player_turn(Player* player, float current_bet);
+
     void betting_round(bool is_preflop = false);
     
     void reset_player_total_bet_amounts(); 
 
     void reset_player_bet_amounts_for_round(); 
 
-    bool round_is_over(float min_bet);
+    bool round_is_over(float current_bet);
 
     bool all_but_one_folded();
 
@@ -75,14 +77,12 @@ private:
     float pot = 0.0;
     Cards community_cards;
 
-    // Initial values
-    int dealer_index = -1;
-    int sb_index     = -1;
-    int bb_index     = -1;
+    int dealer_index;
+    int sb_index;
+    int bb_index;
+    int starting_player_index;
 
     vector<KindsOfAction> get_possible_actions(Action last_action);
-
-    void set_initial_button_indices();
 };
 
 #endif
