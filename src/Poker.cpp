@@ -35,10 +35,23 @@ Poker::Poker(vector<Player*> players, DeckHandler deck, float sb_amount, float b
     this->starting_player_index = 3 % players.size(); 
 }
 
+bool Poker::all_players_have_money() {
+    for (Player* p : players) {
+        if (p->stack <= 0) {
+            return false;
+        } 
+    }
+    return true;
+}
+
 void Poker::play() {
     bool is_first_round = true;
 
     while (1) {
+        if (!all_players_have_money()) {
+            cout << "Not all players have money: exiting game!";
+            return;
+        }
 
         if (!is_first_round) {
             rotate_buttons();

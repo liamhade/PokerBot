@@ -32,12 +32,6 @@
 
 - [~] Add a simple poker engine to play against
 
-	- [ ] (*BUG*, **against loop**) 
-		*Setup*       : Only two players in the game, the user and the bot.
-		*Action*      : User folds.
-		*Expectation* : The bot wins.
-		*Reality*	  : Bot makes the move that they previously played, the game engine skips the user because they folded, and the loops continues. 
-
 	- [ ] (**Monte Carlo win function**) Implement the function `float montecarlo_winrate(Cards my_hand, Cards board_cards, int n_other_players, int s);` that runs `s` MonteCarlo simulations to see how often we would win.
 
 	- [ ] (**bruteforce win function**) Implement the function `float bruteforce_winrate(Cards my_hand, Cards board_cards, int n_other_players)`.

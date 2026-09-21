@@ -23,6 +23,8 @@ class Poker {
 public:
     Poker(vector<Player*> players, DeckHandler deck, float sb_amount, float bb_amount);
     
+    bool all_players_have_money();
+
     void play();
 
     void show_community_cards();
@@ -64,8 +66,6 @@ public:
     bool round_is_over(float current_bet);
 
     bool all_but_one_folded();
-
-    void update_game_using_player_action(Player* player, Action player_action, float* minimum_bet);
 
     void rotate_buttons();
 
