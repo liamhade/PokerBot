@@ -44,7 +44,12 @@ public:
     }
 
     // Must be defined by the child class.
-    virtual Action decide_action(float big_blind, float current_bet) = 0;
+    virtual Action decide_action(
+        float big_blind, 
+		float current_bet,
+		Cards community_cards,
+		int total_num_players
+    ) = 0;
 
     void apply_action_to_player_state(Action action) {
         if (std::get<0>(action) == KindsOfAction::FOLD) {
@@ -55,8 +60,13 @@ public:
 		remove_from_stack(std::get<1>(action));
     }
 
-    Action act(float big_blind, float current_bet) {
-        Action action = decide_action(big_blind, current_bet);
+    Action act(
+        float big_blind, 
+		float current_bet,
+		Cards community_cards,
+		int total_num_players
+    ) {
+        Action action = decide_action(big_blind, current_bet, community_cards, total_num_players);
 		apply_action_to_player_state(action);
         return action;
     }

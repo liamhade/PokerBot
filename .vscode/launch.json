@@ -30,7 +30,7 @@
             "name": "C/C++: g++.exe build and debug testing file",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}\\bin\\testing.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

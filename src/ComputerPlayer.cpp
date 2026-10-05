@@ -1,5 +1,7 @@
 #include "../include/PlayerInterface.h"
+#include "../include/PredictionEngine.h"
 #include <iostream>
+#include <algorithm>
 
 
 class Bot : public Player {
@@ -12,17 +14,34 @@ public:
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };
 
-	Action decide_action(float big_blind, float current_bet) {
+	float _get_bet_size(float big_blind) {
+		float stack_fraction = 0.5;
+		float bet_size = stack*stack_fraction;
+		if (stack < big_blind) {
+			return stack;
+		} else if (bet_size < big_blind) {
+			return big_blind;
+		} 
+		return bet_size;
+	}
+
+	Action decide_action(
+		float big_blind, 
+		float current_bet,
+		Cards community_cards,
+		int total_num_players
+	) {
 		show_player_info();
 
-		// std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(min_total_bet);
-		// KindsOfAction action;
 		float bet_delta = current_bet - round_amount_bet;
-		
+
 		if (bet_delta > 0) {
 			// We haven't bet the minimum amount
 			return std::make_tuple(KindsOfAction::CALL, bet_delta);
 		} else if (bet_delta == 0) {
+			if (win_likelihood(pocket, community_cards, total_num_players, 10000) > 0.6) {
+				return std::make_tuple(KindsOfAction::BET, _get_bet_size(big_blind));
+			}
 			// We've already bet the minimum amount
 			return std::make_tuple(KindsOfAction::CHECK, 0);
 		} else {

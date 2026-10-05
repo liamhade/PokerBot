@@ -1,3 +1,7 @@
+# 9/30/26
+
+I should have defined a Hand as a `tuple<Card, Card>`, rather a `vector<Card>`.  
+
 # 9/8/26
 
 PROBLEM: The betting design for the player is overly complicated. I'll probably need to go in their and fine-tune some of the abstractions.

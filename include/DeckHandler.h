@@ -8,8 +8,8 @@ public:
     DeckHandler();    
     void reset();
     void shuffle_deck();
+    void remove_cards(Cards cards);
     Card draw_card();
-
 private:
     Cards deck;
     void construct_deck();

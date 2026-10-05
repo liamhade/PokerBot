@@ -44,6 +44,8 @@ namespace HandEvaluator {
     bool handrank_lte(HandRank hr1, HandRank hr2);
 	tuple<Cards, HandRank> best_five_hand_out_of_seven(Cards seven_hand);
     tuple<Player, Cards, HandRank> player_with_best_hand(vector<Player> players, Cards community_cards);
+    vector<tuple<Cards, Cards, HandRank>> get_sorted_best_hands_w_ranks(vector<Cards> hands, Cards community_cards);
+    vector<vector<Cards>> get_winning_groups_for_hands(vector<Cards> hands, Cards community_cards);
     vector<vector<PlayerWithHandRank>> ranked_player_hands(vector<Player*> players, Cards community_cards);
 };
 

@@ -20,6 +20,18 @@ void DeckHandler::shuffle_deck() {
 	std::shuffle(deck.begin(), deck.end(), g);
 }
 
+void DeckHandler::remove_cards(Cards cards) {
+	for (int i=deck.size()-1; i>=0; i--) {
+		for (int j=0; j<cards.size(); j++) {
+			if (are_cards_same(deck[i], cards[j])) {
+				deck.erase(deck.begin()+i);
+				cards.erase(cards.begin()+j);
+				break;
+			}
+		}
+	}
+}
+
 Card DeckHandler::draw_card() {
 	const Card card = deck.back();
 	deck.pop_back();

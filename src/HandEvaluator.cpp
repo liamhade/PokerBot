@@ -484,31 +484,88 @@ namespace HandEvaluator {
 		return compare_handrank(handrank1, handrank2) == COMP_TYPE::GT;
 	}
 
+	
+	vector<Cards> get_player_hands(vector<Player*> players) {
+		vector<Cards> hands;
+		for (Player* p : players) {
+			hands.push_back(p->get_hole_cards());
+		}
+		return hands;
+	}
+
+	bool _compare_hand_w_rank_tuple(tuple<Cards, Cards, HandRank> hand_with_rank_1, tuple<Cards, Cards, HandRank> hand_with_rank_2) {
+		HandRank handrank1 = get<2>(hand_with_rank_1);
+		HandRank handrank2 = get<2>(hand_with_rank_2);
+		return compare_handrank(handrank1, handrank2) == COMP_TYPE::GT;
+	}
+
+	/**
+	 * @returns vector<tuple<Cards, HandRank>>, where the first cards are the hand, and the second are the full hand.  
+	 * TODO: Add a seperate type for `Hand`.
+	 */
+	vector<tuple<Cards, Cards, HandRank>> get_sorted_best_hands_w_ranks(vector<Cards> hands, Cards community_cards) {
+		Cards seven_hand;
+		Cards best_five_hand;
+		vector<tuple<Cards, Cards, HandRank>> best_hands_with_ranks = {};
+
+		for (Cards hand: hands) {
+			seven_hand = get_players_seven_hand(hand, community_cards);
+			auto [five_hand, rank] = best_five_hand_out_of_seven(seven_hand);
+			best_hands_with_ranks.push_back({ hand, five_hand, rank });
+			
+		}
+		sort(best_hands_with_ranks.begin(), best_hands_with_ranks.end(), _compare_hand_w_rank_tuple);
+		return best_hands_with_ranks;
+	}
+	
+	/**
+	 * @brief All hands in the same group have the same strength.
+	 * @returns list of list of hands, where the first list of hands are the strongest of equal strength.
+	 */
+    vector<vector<Cards>> get_winning_groups_for_hands(vector<Cards> hands, Cards community_cards) {
+		vector<tuple<Cards, Cards, HandRank>> sorted_best_hands_w_ranks = get_sorted_best_hands_w_ranks(hands, community_cards);
+		// We know that the first hand will be in the first winning group no matter what.
+		vector<vector<Cards>> hand_wining_groups = {{get<0>(sorted_best_hands_w_ranks[0])}};
+		tuple<Cards, Cards, HandRank> hand_with_rank;
+		for (int i=1; i<sorted_best_hands_w_ranks.size(); i++) {
+			hand_with_rank = sorted_best_hands_w_ranks[i];
+			if (compare_handrank(get<2>(hand_with_rank), get<2>(sorted_best_hands_w_ranks[i-1])) == COMP_TYPE::LT) {
+				hand_wining_groups.push_back( { get<0>(hand_with_rank) } );
+			} else {
+				hand_wining_groups[hand_wining_groups.size()-1].push_back(get<0>(hand_with_rank));
+			}
+		}
+		return hand_wining_groups;
+	}
+
+	/**
+	 * @brief Works by checking if each sorted hand is a subset of a players seven hand.
+	 * @param `vector<tuple<Cards, HandRank>>` sorted_hands: This set of cards are the players Hole cards
+	 * @return `vector<tuple<Player*, Cards, HandRank>>` player_with_hand_and_rank: This set of cards are the players five hand.
+	 */
+	vector<tuple<Player*, Cards, HandRank>> attach_player_to_hands_with_rank_in_same_order(vector<Player*> players, vector<tuple<Cards, Cards, HandRank>> sorted_hands) {
+		vector<tuple<Player*, Cards, HandRank>> player_hand_rank = {};
+		for (tuple<Cards, Cards, HandRank> hand_rank : sorted_hands) {
+			for (int i=0; i<players.size(); i++) {
+				if (are_group_of_cards_same(players[i]->get_hole_cards(), get<0>(hand_rank))) {
+					player_hand_rank.push_back({ players[i], get<1>(hand_rank), get<2>(hand_rank) });
+					// A player only attached to one hand.
+					players.erase(players.begin()+i);
+				}
+			}
+		}
+		return player_hand_rank;
+	}
+
+
 	vector<vector<tuple<Player*, Cards, HandRank>>> ranked_player_hands(vector<Player*> players, Cards community_cards) {
 		/*
 		Returns:
 			- All of the players in a "winner-group" have the same handrank, which means that they are tied.
 		*/
-		vector<tuple<Player*, Cards, HandRank>> rank_hands;
-		Cards players_seven_hand;
-		tuple<Cards, HandRank> players_best_hand;
-		HandRank players_best_handrank;
-		Cards    players_best_cards;
-
-		for (Player* p: players) {
-			printf("");
-
-			if (!p->has_player_folded()) {
-				players_seven_hand = get_players_seven_hand(p->get_hole_cards(), community_cards);
-				players_best_hand  = best_five_hand_out_of_seven(players_seven_hand);
-
-				players_best_handrank = get<1>(players_best_hand); 
-				players_best_cards    = get<0>(players_best_hand);
-				rank_hands.push_back(make_tuple(p, players_best_cards, players_best_handrank));
-			}
-		}
-		// Sorting in descending order.
-		sort(rank_hands.begin(), rank_hands.end(), _compare_player_hand_tuple);
+		vector<Cards> player_hands = get_player_hands(players);
+		vector<tuple<Cards, Cards, HandRank>> sorted_best_hands_w_ranks = get_sorted_best_hands_w_ranks(player_hands, community_cards);
+		vector<tuple<Player*, Cards, HandRank>> rank_hands = attach_player_to_hands_with_rank_in_same_order(players, sorted_best_hands_w_ranks);
 
 		vector<vector<tuple<Player*, Cards, HandRank>>> sorted_winner_groups;
 		for (tuple<Player*, Cards, HandRank> &ranked_hand : rank_hands) {

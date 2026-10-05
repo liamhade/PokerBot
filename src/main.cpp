@@ -18,7 +18,7 @@ for helping me to realize that my side pop implementation was over-complicated.
 
 int main() {
     DeckHandler deck;
-    Human p1(5, "Kenny Rogers");
+    Human p1(100, "Kenny Rogers");
     Bot p2(100, "James Dean");
     // Bot p3(100, "Merle Haggard");
 

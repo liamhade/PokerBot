@@ -28,14 +28,18 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "${workspaceFolder}\\src\\Action.cpp",
                 "${workspaceFolder}\\src\\CardHandler.cpp",
+                "${workspaceFolder}\\src\\ComputerPlayer.cpp",
                 "${workspaceFolder}\\src\\DeckHandler.cpp",
                 "${workspaceFolder}\\src\\HandEvaluator.cpp",
+                "${workspaceFolder}\\src\\HumanPlayer.cpp",
+                "${workspaceFolder}\\src\\Poker.cpp",
                 "${workspaceFolder}\\src\\PotDispersal.cpp",
-                "${workspaceFolder}\\src\\Player.cpp",
-                "${fileDirname}\\main.cpp",
+                "${workspaceFolder}\\src\\PredictionEngine.cpp",
+                "${workspaceFolder}\\tests\\test_PredictionEngine.cpp",
                 "-o",
-                "${fileDirname}\\main.exe"
+                "${workspaceFolder}\\bin\\testing.exe"
             ],
             "problemMatcher": [
                 "$gcc"

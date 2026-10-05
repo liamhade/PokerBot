@@ -5,9 +5,14 @@
 - [ ] (**Add in tests cases for edge-cases**)
 	- [ ] Player runs out of money --> game should end. 
 
+- [ ] (**add tests for prediction engine**)
+	- [ ] Our results should line up with the heat charts in the beginning.
+
 - [ ] (**Migrate tests to GoogleTest**)
 
 ## Design
+
+- [ ] (**add explicit `tuple<Card, Card> Hand` type**)
 
 - [ ] (**Add `$` to the amounts**)
 
@@ -19,7 +24,11 @@
 
 ## Game Mechanics 
 
-- [ ] (**game end when player runs out of money**)
+- [ ] (**players shouldn't be able to bet more than they have**)
+
+- [ ] (**kicker mechanism**) We need to incorporate kicker cards into the deck comparison mechanism.
+
+- [x] (**game ends when player runs out of money**)
 
 - [ ] (**add/remove players**) A player should be able to leave / join the game any time they want.
 

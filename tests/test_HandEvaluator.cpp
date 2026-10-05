@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 
+#include "..\src\Testing.h"
 #include "..\src\HandEvaluator.h"
 #include "..\src\CardHandler.h"
 #include "..\src\Player.h"
@@ -8,15 +9,6 @@
 using namespace std;
 
 // g++ -g "src/CardHandler.cpp" "src/HandEvaluator.cpp" "src/Player.cpp" "tests/test_HandEvaluator.cpp" -o "tests/test.exe"; tests/test.exe
-
-template<typename T>
-void assert(T actual, T expected, string test_name) {
-    if (actual != expected) {
-        cout << "\033[31m" << "FAILED" << "\033[0m" << ":  " << test_name << "\n";
-    } else{
-        cout << "\033[32m" << "PASSED" << "\033[0m" << ":  " << test_name << "\n";
-    }
-}
 
 void test_all_cards_in_two_pair() {
     /* Making sure that the handrank function propely handles a pair. */

@@ -71,3 +71,19 @@ std::string get_cards_str(Cards cards) {
 	}
 	return cards_str;
 }
+
+bool are_cards_same(Card c1, Card c2) {
+	return ((get_card_suit(c1) == get_card_suit(c2)) && (get_card_value(c1) == get_card_value(c2)));
+}
+
+bool are_group_of_cards_same(Cards cs1, Cards cs2) {
+	if (cs1.size() != cs2.size()) {
+		return false;
+	}
+	for (int i=0; i<cs1.size(); i++) {
+		if (!(are_cards_same(cs1[i], cs2[i]))) {
+			return false;
+		}
+	}
+	return true;
+}

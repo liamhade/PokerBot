@@ -25,4 +25,8 @@ std::string cardvalue_2_string(CardValue value);
 
 std::string get_cards_str(Cards cards);
 
+bool are_cards_same(Card c1, Card c2);
+
+bool are_group_of_cards_same(Cards cs1, Cards cs2);
+
 #endif 

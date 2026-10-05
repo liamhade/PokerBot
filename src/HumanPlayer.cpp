@@ -13,7 +13,12 @@ public:
         std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
     };
 
-	Action decide_action(float big_blind, float current_bet) {
+	Action decide_action( 
+		float big_blind, 
+		float current_bet,
+		Cards community_cards,
+		int total_num_players
+	) {
 		KindsOfAction user_action;
 		float bet_amount;
 		std::vector<KindsOfAction> possible_actions = get_possible_actions_for_player(current_bet);

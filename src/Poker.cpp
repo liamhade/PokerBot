@@ -263,7 +263,7 @@ bool Poker::is_only_player_who_can_bet(Player* player) {
 
 float Poker::player_turn(Player* player, float current_bet) {
     cout << get_player_header(player) << "\n";
-    Action player_action = player->act(bb_amount, current_bet);
+    Action player_action = player->act(bb_amount, current_bet, community_cards, this->players.size());
     show_action(player_action);
     pot += get<1>(player_action);
     return max({ current_bet, player->get_round_amount_bet() });

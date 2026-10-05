@@ -1,18 +1,10 @@
 #include <iostream>
 #include <vector>
 
+#include "..\src\Testing.h"
 #include "..\src\CardHandler.h"
 #include "..\src\Player.h"
 #include "..\src\PotDispersal.h"
-
-template<typename T>
-void assert(T actual, T expected, string test_name) {
-    if (actual != expected) {
-        cout << "\033[31m" << "FAILED" << "\033[0m" << ":  " << test_name << "\n";
-    } else{
-        cout << "\033[32m" << "PASSED" << "\033[0m" << ":  " << test_name << "\n";
-    }
-}
 
 void test_create_sidepots() {
     Player p1(100, "Alice");
