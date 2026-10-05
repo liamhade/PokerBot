@@ -49,6 +49,8 @@ double win_likelihood(
 		Cards simulated_com_cards = get_simulated_com_cards(deck, community_cards);
 		vector<Cards> sim_player_hands = get_simulated_player_hands(deck, num_players-1);  
 
+		sim_player_hands.push_back(hand);
+		
 		// Calculating simulated outcome
 		vector<vector<Cards>> winning_groups = HandEvaluator::get_winning_groups_for_hands(sim_player_hands, simulated_com_cards);
 		if (hand_in_first_winning_group(hand, winning_groups)) {

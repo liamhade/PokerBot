@@ -32,9 +32,8 @@ void test_royal_flush_alway_wins() {
 	Cards hand = { ten, jack }; 
 	Cards com_cards = { queen, king, ace }; 
 
-	double wl = win_likelihood(hand, com_cards, 3, 100);
+	double wl = win_likelihood(hand, com_cards, 3, 1000);
 
-	std::cout << wl << std::endl;
 	assert(wl, 1.00, "Royal flush alway wins");
 }
 
