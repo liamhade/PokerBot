@@ -5,8 +5,10 @@
 - [ ] (**Add in tests cases for edge-cases**)
 	- [ ] Player runs out of money --> game should end. 
 
-- [ ] (**add tests for prediction engine**)
+- [x] (**add tests for prediction engine**)
 	- [ ] Our results should line up with the heat charts in the beginning.
+
+- [ ] (**add scoped timer to see why MonteCarlo is taking so long**)
 
 - [ ] (**Migrate tests to GoogleTest**)
 
