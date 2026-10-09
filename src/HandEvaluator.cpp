@@ -530,7 +530,6 @@ namespace HandEvaluator {
 		
 		vector<tuple<Cards, Cards, HandRank>> sorted_best_hands_w_ranks = get_sorted_best_hands_w_ranks(hands, community_cards);
 		// We know that the first hand will be in the first winning group no matter what.
-		
 		vector<vector<Cards>> hand_wining_groups = {{get<0>(sorted_best_hands_w_ranks[0])}};
 		tuple<Cards, Cards, HandRank> hand_with_rank;
 		for (int i=1; i<sorted_best_hands_w_ranks.size(); i++) {

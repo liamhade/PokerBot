@@ -7,9 +7,9 @@
 
 using namespace std;
 
-Cards get_simulated_com_cards(DeckHandler deck, Cards known_community_cards);
+Cards get_simulated_com_cards(DeckHandler* deck, Cards known_community_cards);
 
-vector<Cards> get_simulated_player_hands(DeckHandler deck, int num_players);
+vector<Cards> get_simulated_player_hands(DeckHandler* deck, int num_players);
 
 bool hand_in_first_winning_group(Cards hand, vector<vector<Cards>> winning_groups);
 

@@ -3,10 +3,10 @@
 
 using namespace std;
 
-Cards get_simulated_com_cards(DeckHandler deck, Cards known_community_cards) {
+Cards get_simulated_com_cards(DeckHandler* deck, Cards known_community_cards) {
 	Cards simmed_community_cards = known_community_cards;
 	for (int i=0; i<(5-known_community_cards.size()); i++) {
-		simmed_community_cards.push_back(deck.draw_card());
+		simmed_community_cards.push_back(deck->draw_card());
 	}
 	return simmed_community_cards;
 }
@@ -14,10 +14,10 @@ Cards get_simulated_com_cards(DeckHandler deck, Cards known_community_cards) {
 /**
  * @brief Simulates the possible other player hands
  */
-vector<Cards> get_simulated_player_hands(DeckHandler deck, int num_players) {
+vector<Cards> get_simulated_player_hands(DeckHandler* deck, int num_players) {
 	vector<Cards> player_cards = {};
 	for (int i=0; i<num_players; i++) {
-		player_cards.push_back({ deck.draw_card(), deck.draw_card() });
+		player_cards.push_back({ deck->draw_card(), deck->draw_card() });
 	}
 	return player_cards;
 }
@@ -37,7 +37,7 @@ double win_likelihood(
 	int num_players,
 	int num_sims) {
 	
-	int times_won = 0;
+	double times_won = 0.0;
 
 	for (int i=0; i<num_sims; i++) {
 		// Removing the cards that we know from the deck
@@ -45,8 +45,8 @@ double win_likelihood(
 		deck.remove_cards(hand);
 		deck.remove_cards(community_cards);
 
-		Cards simulated_com_cards = get_simulated_com_cards(deck, community_cards);
-		vector<Cards> sim_player_hands = get_simulated_player_hands(deck, num_players-1);  
+		Cards simulated_com_cards = get_simulated_com_cards(&deck, community_cards);
+		vector<Cards> sim_player_hands = get_simulated_player_hands(&deck, num_players-1);  
 		sim_player_hands.push_back(hand);
 		
 		// Calculating simulated outcome

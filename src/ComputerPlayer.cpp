@@ -39,7 +39,9 @@ public:
 			// We haven't bet the minimum amount
 			return std::make_tuple(KindsOfAction::CALL, bet_delta);
 		} else if (bet_delta == 0) {
-			if (win_likelihood(pocket, community_cards, total_num_players, 10000) > 0.6) {
+			double wl = win_likelihood(pocket, community_cards, total_num_players, 250);
+			std::cout << "[the bot believes it has a " << wl << "\% chance of winning]\n\n";												
+			if (wl > 0.6) {
 				return std::make_tuple(KindsOfAction::BET, _get_bet_size(big_blind));
 			}
 			// We've already bet the minimum amount

@@ -43,7 +43,7 @@
 
 - [~] Add a simple poker engine to play against
 
-	- [ ] (**Monte Carlo win function**) Implement the function `float montecarlo_winrate(Cards my_hand, Cards board_cards, int n_other_players, int s);` that runs `s` MonteCarlo simulations to see how often we would win.
+	- [~] (**Monte Carlo win function**) Implement the function `float montecarlo_winrate(Cards my_hand, Cards board_cards, int n_other_players, int s);` that runs `s` MonteCarlo simulations to see how often we would win.
 
 	- [ ] (**bruteforce win function**) Implement the function `float bruteforce_winrate(Cards my_hand, Cards board_cards, int n_other_players)`.
 
