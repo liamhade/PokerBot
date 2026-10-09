@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <tuple>
+#include <chrono>
 #include "../include/HandEvaluator.h"
 #include "../include/PlayerInterface.h"
 
@@ -423,6 +424,8 @@ namespace HandEvaluator {
 		Cards    best_five_hand = all_five_hands[0]; // Initializing the best five card hand
 		HandRank best_hand_rank = get_cards_handrank(best_five_hand); 
 		HandRank new_handrank;
+
+		// TODO: Fix this code chunk; it's very slow.
 		for (Cards hand : all_five_hands) {
 			new_handrank = get_cards_handrank(hand);
 			if (handrank_lte(best_hand_rank, new_handrank)) {
@@ -431,6 +434,7 @@ namespace HandEvaluator {
 				best_hand_rank = new_handrank;
 			}
 		}
+
 		return {best_five_hand, best_hand_rank};
 	}
 
@@ -510,9 +514,9 @@ namespace HandEvaluator {
 
 		for (Cards hand: hands) {
 			seven_hand = get_players_seven_hand(hand, community_cards);
+
 			auto [five_hand, rank] = best_five_hand_out_of_seven(seven_hand);
 			best_hands_with_ranks.push_back({ hand, five_hand, rank });
-			
 		}
 		sort(best_hands_with_ranks.begin(), best_hands_with_ranks.end(), _compare_hand_w_rank_tuple);
 		return best_hands_with_ranks;
@@ -523,8 +527,10 @@ namespace HandEvaluator {
 	 * @returns list of list of hands, where the first list of hands are the strongest of equal strength.
 	 */
     vector<vector<Cards>> get_winning_groups_for_hands(vector<Cards> hands, Cards community_cards) {
+		
 		vector<tuple<Cards, Cards, HandRank>> sorted_best_hands_w_ranks = get_sorted_best_hands_w_ranks(hands, community_cards);
 		// We know that the first hand will be in the first winning group no matter what.
+		
 		vector<vector<Cards>> hand_wining_groups = {{get<0>(sorted_best_hands_w_ranks[0])}};
 		tuple<Cards, Cards, HandRank> hand_with_rank;
 		for (int i=1; i<sorted_best_hands_w_ranks.size(); i++) {

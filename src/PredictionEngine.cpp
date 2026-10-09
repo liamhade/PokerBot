@@ -38,17 +38,15 @@ double win_likelihood(
 	int num_sims) {
 	
 	int times_won = 0;
-	
+
 	for (int i=0; i<num_sims; i++) {
 		// Removing the cards that we know from the deck
 		DeckHandler deck = DeckHandler();
 		deck.remove_cards(hand);
 		deck.remove_cards(community_cards);
 
-		// Filling in other cards
 		Cards simulated_com_cards = get_simulated_com_cards(deck, community_cards);
 		vector<Cards> sim_player_hands = get_simulated_player_hands(deck, num_players-1);  
-
 		sim_player_hands.push_back(hand);
 		
 		// Calculating simulated outcome
