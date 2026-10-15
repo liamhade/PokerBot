@@ -1,7 +1,8 @@
 #include "../include/PlayerInterface.h"
+#include "../include/InputHandler.h"
 #include <iostream>
 #include <algorithm>
-
+#include <limits>
 
 class Human : public Player {
 public:
@@ -69,9 +70,26 @@ public:
 	}
 
 	KindsOfAction get_user_action_type(std::vector<KindsOfAction> possible_actions) {
+		std::string input; 
 		int user_action_num;
-		std::cout << "Enter the number of your action: ";
-		std::cin >> user_action_num;
+		
+		while (1) {
+			std::cout << "Enter the number of your action: ";
+			std::cin >> input;
+
+			if (!(is_valid_int(input))) {
+				clear_cin();
+				std::cout << "\n\t [WARNING] Input must be a valid integer! \n\n";
+				continue;
+			}
+			user_action_num = std::stoi(input);
+			if ((user_action_num < 0) || (possible_actions.size()-1 < user_action_num)) {
+				clear_cin();
+				std::cout << "\n\t [WARNING] Inputted action is not a valid option! \n\n";
+				continue;
+			} 
+			break;
+		}
 		return possible_actions[user_action_num];
 	}
 

@@ -1,3 +1,13 @@
+# TODO
+
+## Before GitHub
+
+- [ ] (**complete essential mechanics**)
+
+- [ ] (**update the README.md**)
+
+- [ ] (**decribe the process in the NOTES.md**)
+
 ## Testing
 
 - [ ] (**Ensure testing suite runs**)
@@ -13,6 +23,10 @@
 - [ ] (**Migrate tests to GoogleTest**)
 
 ## Design
+
+- [ ] (**Create library for the user interface**)
+
+	- [ ] (**factor out warnining messages**)
 
 - [ ] (**add explicit `tuple<Card, Card> Hand` type**)
 
