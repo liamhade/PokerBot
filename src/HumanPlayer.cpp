@@ -105,12 +105,15 @@ public:
 			return stack;
 		} else {
 			float user_bet;
-			float min_bet = std::min({bet_needed_to_stay_in_game, big_blind});
+			float min_bet = std::max({bet_needed_to_stay_in_game, big_blind});
 			while (1) {
 				std::cout << "How much would you like to bet: ";
 				std::cin >> user_bet;
 				if (user_bet < min_bet) {
-					std::cout << "\tIllegal move: must bet at least $" << min_bet << "..." << std::endl; 
+					std::cout << "\n\tIllegal move: must bet at least $" << min_bet << "...\n" << std::endl; 
+					continue;
+				} else if (user_bet > stack) {
+					std::cout << "\n\tIllegal move: you cannot bet more " << min_bet << "...\n" << std::endl; 
 					continue;
 				}
 				return user_bet;
