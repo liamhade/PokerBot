@@ -113,7 +113,7 @@ public:
 					std::cout << "\n\tIllegal move: must bet at least $" << min_bet << "...\n" << std::endl; 
 					continue;
 				} else if (user_bet > stack) {
-					std::cout << "\n\tIllegal move: you cannot bet more than" << stack << "...\n" << std::endl; 
+					std::cout << "\n\tIllegal move: you cannot bet more than $" << stack << " (all of your chips)... \n" << std::endl; 
 					continue;
 				}
 				return user_bet;
