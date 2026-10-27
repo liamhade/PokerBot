@@ -1,10 +1,10 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "..\src\Testing.h"
-#include "..\src\HandEvaluator.h"
-#include "..\src\CardHandler.h"
-#include "..\src\Player.h"
+#include "..\include\Testing.h"
+#include "..\include\HandEvaluator.h"
+#include "..\include\CardHandler.h"
+#include "..\include\PlayerInterface.h"
 
 using namespace std;
 

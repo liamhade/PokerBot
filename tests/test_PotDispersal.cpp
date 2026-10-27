@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 
-#include "..\src\Testing.h"
-#include "..\src\CardHandler.h"
-#include "..\src\Player.h"
-#include "..\src\PotDispersal.h"
+#include "..\include\Testing.h"
+#include "..\include\CardHandler.h"
+#include "..\include\PotDispersal.h"
+#include "..\src\HumanPlayer.cpp"
 
 void test_create_sidepots() {
     Player p1(100, "Alice");
