@@ -43,7 +43,7 @@ namespace HandEvaluator {
 		return static_cast<int>(get_card_value(c1)) < static_cast<int>(get_card_value(c2));
 	}
 
-	void sort_cards(Cards cards) {
+	void sort_cards(Cards& cards) {
 		sort(cards.begin(), cards.end(), card_value_gt);
 	}
 
@@ -355,9 +355,9 @@ namespace HandEvaluator {
 		HandRank high_card_handrank;
 		Cards cards_in_hand;
 		
-		// High-card will be the last card in the sorted five_hand
+		// High-card will be the first card in the sorted (descending) five_hand
 		sort_cards(five_hand);
-		Card high_card = five_hand[five_hand.size()-1];
+		Card high_card = five_hand[0];
 
 		high_card_handrank.kind_of_hand = KindsOfHand::High_Card;
 		high_card_handrank.sorted_cards_inside_hand = { high_card };

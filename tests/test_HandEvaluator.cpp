@@ -98,11 +98,35 @@ void test_three_players_two_tie() {
     assert(get<0>(ranked_player_hands[0][0]), static_cast<Player*>(&p1), "test_three_players_two_tie() - Alice in winning group");
     assert(get<0>(ranked_player_hands[1][0]), static_cast<Player*>(&p2), "test_three_players_two_tie() - Bob in losing group");
     assert(get<0>(ranked_player_hands[0][1]), static_cast<Player*>(&p3), "test_three_players_two_tie() - Carl in winning group");
-}       
+}
+
+void test_high_card() {
+    /* A-K-9-5-3 beats Q-J-9-5-4, and the high card is the ace. */
+    Card c1 = make_tuple(CardValue::Ace,   Suit::Clubs);
+    Card c2 = make_tuple(CardValue::King,  Suit::Hearts);
+    Card c3 = make_tuple(CardValue::Nine,  Suit::Spades);
+    Card c4 = make_tuple(CardValue::Five,  Suit::Diamonds);
+    Card c5 = make_tuple(CardValue::Three, Suit::Clubs);
+
+    Card d1 = make_tuple(CardValue::Queen, Suit::Clubs);
+    Card d2 = make_tuple(CardValue::Jack,  Suit::Hearts);
+    Card d3 = make_tuple(CardValue::Nine,  Suit::Hearts);
+    Card d4 = make_tuple(CardValue::Five,  Suit::Spades);
+    Card d5 = make_tuple(CardValue::Four,  Suit::Clubs);
+
+    HandRank h1 = HandEvaluator::get_cards_handrank({c5, c3, c1, c4, c2}); // Ace high
+    HandRank h2 = HandEvaluator::get_cards_handrank({d1, d2, d3, d4, d5}); // Queen high
+
+    assert(h1.kind_of_hand, KindsOfHand::High_Card,   "test_high_card() - kind of hand");
+    assert(h1.sorted_cards_inside_hand, {c1},          "test_high_card() - inside hand");
+    assert(HandEvaluator::handrank_lte(h2, h1), true,  "test_high_card() - ace high beats queen high");
+    assert(HandEvaluator::handrank_lte(h1, h2), false, "test_high_card() - queen high doesn't beat ace high");
+}
 
 int main() {
     test_all_cards_in_two_pair();
     test_higher_pair();
+    test_high_card();
     test_ranked_player_hands();
     test_three_players_two_tie();
 }
