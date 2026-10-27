@@ -5,13 +5,18 @@
 
 
 class Bot : public Player {
+private:
+	bool b_show_internals;
 public:
-	Bot(float s, std::string n) : Player(s, n) {}
+	Bot(float s, std::string n, bool show_internals = false) 
+		: Player(s, n), b_show_internals(show_internals) {}
 
 	void show_player_info() {
         // std::cout << "BOT   : " << "\033[1m" << name << "\033[0m" << std::endl;
         std::cout << "Stack : " << stack << std::endl;
-        std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
+		if (b_show_internals) {
+			std::cout << "Hand  : " << get_cards_str(pocket) << std::endl << std::endl;
+		}
     };
 
 	float _get_bet_size(float big_blind) {
@@ -40,7 +45,9 @@ public:
 			return std::make_tuple(KindsOfAction::CALL, bet_delta);
 		} else if (bet_delta == 0) {
 			double wl = win_likelihood(pocket, community_cards, total_num_players, 250);
-			std::cout << "[the bot believes it has a " << wl << "\% chance of winning]\n\n";												
+			if (b_show_internals) {
+				std::cout << "[the bot believes it has a " << wl << "\% chance of winning]\n\n";												
+			}
 			if (wl > 0.6) {
 				return std::make_tuple(KindsOfAction::BET, _get_bet_size(big_blind));
 			}

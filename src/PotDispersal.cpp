@@ -91,7 +91,7 @@ void show_winner_details(float winnings, PlayerWithHandRank winner_details, bool
     cout << player->get_name() <<" has won $" << winnings << endl;
     if (show_hand_details) {
         cout << " -- They had a " << KindsOfHand_2_string(handrank.kind_of_hand);
-        cout << " with the cards: " << get_cards_str(cards) << endl;
+        cout << " with the cards: " << get_cards_str(cards) << endl << endl;
     }
 }
 
