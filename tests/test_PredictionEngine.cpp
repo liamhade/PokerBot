@@ -2,7 +2,7 @@
 #include "..\include\DeckHandler.h"
 #include "..\include\PredictionEngine.h"
 #include "..\include\Testing.h"
-#include "vector"
+#include <vector>
 
 void test_mc_finishes_in_time_on_1_sim() {
 	DeckHandler deck;

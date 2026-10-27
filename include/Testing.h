@@ -1,5 +1,10 @@
+using namespace std;
+
 #ifndef TESTING
 #define TESTING
+
+#include <iostream>
+#include <string>
 
 template<typename T>
 void assert(T actual, T expected, string test_name) {

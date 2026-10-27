@@ -27,13 +27,13 @@
             "preLaunchTask": "C/C++: g++.exe for main.cpp"
         },
         {
-            "name": "C/C++: g++.exe build and debug testing file",
+            "name": "C/C++: g++.exe build and debug test_HandEvaluator",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}\\bin\\testing.exe",
+            "program": "${workspaceFolder}\\bin\\test_HandEvaluator.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -50,8 +50,71 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++.exe for testing"
+            "preLaunchTask": "build test_HandEvaluator"
         },
+        {
+            "name": "C/C++: g++.exe build and debug test_PotDispersal",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\bin\\test_PotDispersal.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build test_PotDispersal"
+        },
+        {
+            "name": "C/C++: g++.exe build and debug test_PredictionEngine",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\bin\\test_PredictionEngine.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build test_PredictionEngine"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Build and debug all tests",
+            "configurations": [
+                "C/C++: g++.exe build and debug test_HandEvaluator",
+                "C/C++: g++.exe build and debug test_PotDispersal",
+                "C/C++: g++.exe build and debug test_PredictionEngine"
+            ],
+            "stopAll": true
+        }
     ],
     "version": "2.0.0"
 }

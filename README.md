@@ -57,12 +57,14 @@ Bot p2(100, "James Dean", true);
 
 ## Running tests
 
+Each file in `tests/` is its own program. To build and run one (swap in `test_HandEvaluator`, `test_PotDispersal`, or `test_PredictionEngine`):
+
 ```
-g++ -g src/Action.cpp src/CardHandler.cpp src/ComputerPlayer.cpp src/DeckHandler.cpp src/HandEvaluator.cpp src/HumanPlayer.cpp src/Poker.cpp src/PotDispersal.cpp src/PredictionEngine.cpp tests/test_PredictionEngine.cpp -o bin/testing.exe
-./bin/testing.exe
+g++ -g src/Action.cpp src/CardHandler.cpp src/ComputerPlayer.cpp src/DeckHandler.cpp src/HandEvaluator.cpp src/HumanPlayer.cpp src/InputHandler.cpp src/Poker.cpp src/PotDispersal.cpp src/PredictionEngine.cpp tests/test_PredictionEngine.cpp -o bin/test_PredictionEngine.exe
+./bin/test_PredictionEngine.exe
 ```
 
-Or use the VS Code task **"C/C++: g++.exe for testing"**.
+**From VS Code:** run **Terminal → Run Task → "run all tests"** to build and run every test file in order (it's also the default *Run Test Task*). Each file also has its own **"run test_…"** task, and Run and Debug has a **"build and debug test_…"** configuration for each one, plus **"Build and debug all tests"** to debug all of them at once.
 
 ## Project structure
 

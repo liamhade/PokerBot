@@ -7,9 +7,9 @@
 #include "..\src\HumanPlayer.cpp"
 
 void test_create_sidepots() {
-    Player p1(100, "Alice");
-    Player p2(100, "Bob");
-    Player p3(100, "Carl");
+    Human p1(100, "Alice");
+    Human p2(100, "Bob");
+    Human p3(100, "Carl");
 
     // Simulating betting
     p1.add_to_amount_bet(50);
@@ -24,9 +24,9 @@ void test_create_sidepots() {
 }
 
 void test_disperse_sidepot_funds_to_winners() {
-    Player p1(0, "Alice");
-    Player p2(0, "Bob");
-    Player p3(0, "Carl");
+    Human p1(0, "Alice");
+    Human p2(0, "Bob");
+    Human p3(0, "Carl");
     
     //////////////////////////////////
     /* Creating PlayerWithHandRanks */

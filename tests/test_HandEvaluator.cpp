@@ -1,10 +1,11 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "..\include\Testing.h"
-#include "..\include\HandEvaluator.h"
-#include "..\include\CardHandler.h"
-#include "..\include\PlayerInterface.h"
+#include "../include/Testing.h"
+#include "../include/HandEvaluator.h"
+#include "../include/CardHandler.h"
+#include "../include/PlayerInterface.h"
+#include "../src/HumanPlayer.cpp"
 
 using namespace std;
 
@@ -46,8 +47,8 @@ void test_higher_pair() {
 
 void test_ranked_player_hands() {
     /* Alice has a better hand than Bob. */
-    Player p1(100, "Alice");
-    Player p2(100, "Bob");
+    Human p1(100, "Alice");
+    Human p2(100, "Bob");
 
     Card p1_c1 = make_tuple(CardValue::Seven, Suit::Clubs); 
     Card p1_c2 = make_tuple(CardValue::Ace,   Suit::Clubs);
@@ -65,14 +66,14 @@ void test_ranked_player_hands() {
 
     vector<vector<tuple<Player*, Cards, HandRank>>> ranked_player_hands = HandEvaluator::ranked_player_hands({&p1, &p2}, {c1, c2, c3, c4, c5});
 
-    assert(get<0>(ranked_player_hands[0][0]), &p1, "test_ranked_player_hands()");
+    assert(get<0>(ranked_player_hands[0][0]), static_cast<Player*>(&p1), "test_ranked_player_hands()");
 }
 
 void test_three_players_two_tie() {
     /* Alice and Carl tie with the top hands. */
-    Player p1(100, "Alice");
-    Player p2(100, "Bob");
-    Player p3(100, "Carl");
+    Human p1(100, "Alice");
+    Human p2(100, "Bob");
+    Human p3(100, "Carl");
 
     Card p1_c1 = make_tuple(CardValue::Seven, Suit::Clubs); 
     Card p1_c2 = make_tuple(CardValue::Ace,   Suit::Clubs);
@@ -94,9 +95,9 @@ void test_three_players_two_tie() {
 
     vector<vector<tuple<Player*, Cards, HandRank>>> ranked_player_hands = HandEvaluator::ranked_player_hands({&p1, &p2, &p3}, {c1, c2, c3, c4, c5});
 
-    assert(get<0>(ranked_player_hands[0][0]), &p1, "test_three_players_two_tie() - Alice in winning group");
-    assert(get<0>(ranked_player_hands[1][0]), &p2, "test_three_players_two_tie() - Bob in losing group");
-    assert(get<0>(ranked_player_hands[0][1]), &p3, "test_three_players_two_tie() - Carl in winning group");
+    assert(get<0>(ranked_player_hands[0][0]), static_cast<Player*>(&p1), "test_three_players_two_tie() - Alice in winning group");
+    assert(get<0>(ranked_player_hands[1][0]), static_cast<Player*>(&p2), "test_three_players_two_tie() - Bob in losing group");
+    assert(get<0>(ranked_player_hands[0][1]), static_cast<Player*>(&p3), "test_three_players_two_tie() - Carl in winning group");
 }       
 
 int main() {
