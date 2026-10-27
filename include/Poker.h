@@ -29,6 +29,8 @@ public:
 
     void show_community_cards();
 
+    void show_title();
+
     void show_header(string text);
 
     void reset_player_fold_states();

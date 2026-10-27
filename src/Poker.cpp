@@ -47,6 +47,8 @@ bool Poker::all_players_have_money() {
 void Poker::play() {
     bool is_first_round = true;
 
+    show_title();
+
     while (1) {
         if (!all_players_have_money()) {
             cout << "Not all players have money: exiting game!";
@@ -103,6 +105,18 @@ void Poker::play() {
 
         disperse_winnings(true);
     }
+}
+
+void Poker::show_title() {
+    cout << R"(
+ _____                             _   _         _      _  _
+|_   _|  ___ __  __  __ _  ___    | | | |  ___  | |  __| |( )  ___  _ __ ___
+  | |   / _ \\ \/ / / _` |/ __|   | |_| | / _ \ | | / _` ||/  / _ \| '_ ` _ \
+  | |  |  __/ >  < | (_| |\__ \   |  _  || (_) || || (_| |   |  __/| | | | | |
+  |_|   \___|/_/\_\ \__,_||___/   |_| |_| \___/ |_| \__,_|    \___||_| |_| |_|
+)";
+    cout << "\nan exploration in C++ by Liam Hade\n\n";
+    this_thread::sleep_for(chrono::milliseconds(1000));
 }
 
 void Poker::show_header(string text) {
