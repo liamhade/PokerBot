@@ -2,7 +2,7 @@
 
 The purpose of this project is to get familiar with C++ and mathematical simulation approaches by building a playable poker engine with monte-carlo simulation features.
 
-*Disclaimer*: While I tried to do the entirety of this project by hand, there were certain parts (marked in the code) where I either used AI to help debug, or looked up using AI overview to describe the body of a function. With that being said, the designs are 95% my own, with some online research mixed in (see the side-pot note in `main.cpp`). 
+*Disclaimer*: While I tried to do the entirety of this project by hand, there were certain parts (marked in the code) where I either used AI to help debug, used AI overview to describe the body of a function, or used Claude Code to help structure this README. With that being said, the architecture and implementation are 95% my own, with some online research mixed in (see the side-pot note in `main.cpp`). 
 
 ## Features
 
