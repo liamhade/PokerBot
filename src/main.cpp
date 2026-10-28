@@ -13,7 +13,7 @@ using namespace std;
 
 /*
 Thank you to paparazzo from https://softwareengineering.stackexchange.com/questions/317640/poker-split-side-pots
-for helping me to realize that my side pop implementation was over-complicated.
+for helping me to realize that my side pot implementation was over-complicated.
 */
 
 int main() {
